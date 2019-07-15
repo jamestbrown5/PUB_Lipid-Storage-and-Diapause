@@ -2,7 +2,9 @@
 title: "Energy storage during diapause preparation and diapause."
 author: "Brown, JT"
 date: "May 9, 2019"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 ## Libraries 
 ```{r}
@@ -15,7 +17,6 @@ library(ez)
 library(lsr)
 library(dplyr)
 library(tidyr)
-library(googleVis)
 library(MASS)
 library(doBy)
 library(plyr)
@@ -24,10 +25,10 @@ library(plyr)
 ## Plots and data analysis of CO2 production
 ```{r}
 ##PC
-#data=read_excel("/Users/jbrown/Documents/GitHub/Respirometry/Data/Respir.xlsx", sheet="Sheet1")
+data=read_excel("/Users/jbrown/Documents/GitHub/Respirometry/Data/Respir.xlsx", sheet="Sheet1")
 
-file: data
-sheet: respirdata
+#file: data
+#sheet: respirdata
 
 ############## Data Prep ###################
 data=subset(data, VCO2!="NA") # Remove NAs from df
@@ -183,6 +184,9 @@ treatmasspeaks=rbind(datamassbe,datamassuz)
 #View(treatmasspeaks)
 modtreatmasspeaks=lm(mass~strain,treatmasspeaks)
 summary(modtreatmasspeaks)
+
+
+
 ```
 
 ## Plot and data analysis for wandering day
@@ -191,8 +195,8 @@ summary(modtreatmasspeaks)
 ##PC
 data=read_excel("/Users/jbrown/Documents/GitHub/Lipid_Quantification/Data/Extraction Samples JLM.xlsx",sheet = "WANDER")
 
-file: data
-sheet: wanderdata
+#file: data
+#sheet: wanderdata
 
 #converting wide to long. This code puts all the observations into one column with the label of your choice (measurements used below)
 all=gather(data,day,stage,"82wander_0616":"01wander_0327")
@@ -240,8 +244,8 @@ summary(mod12) ## difference in wandering in short day
 ##PC
 data=read_excel("/Users/jbrown/Documents/GitHub/Lipid_Quantification/Data/Extraction Samples JLM.xlsx",sheet = "CONTSAMPdf")
 
-file: data
-sheet: energy
+#file: data
+#sheet: energy
 
 data=subset(data,treat!="NA")
 data=subset(data,cohort!="20180131")
@@ -351,14 +355,126 @@ step(mixedL1)
 step(mixedL5)
 ```
 
+```{r}
+data=read_excel("/Users/jbrown/Documents/GitHub/Respirometry/Data/Respir.xlsx", sheet="Sheet1")
+
+############## Data Prep ###################
+data=subset(data, VCO2!="NA") # Remove NAs from df
+data=subset(data, mass!="NA")
+data=subset(data, syringe!="Blank Control") #Removing "Blank Control" syringes
+data$syringe=as.character(data$syringe) #Set "syringe" as a character
+data$strain<-as.factor(data$strain) #set strain as ind var
+data$treat<-as.factor(data$treat) #set treat as factor as ind var
+data$stage<-as.factor(data$stage)
+dataBEUZmass=subset(data, stage=="L")
+dataBEUZmass=subset(dataBEUZmass, stage!="P")
+dataBEUZmass=subset(dataBEUZmass,Tray!="12,23 1201-01")
+dataBEUZmass=subset(dataBEUZmass,Tray!="12,23 1201-02")
+dataBEUZmass=subset(dataBEUZmass,Tray!="16,23 1202")
+dataBEUZmass=subset(dataBEUZmass,Tray!="16,23 1201")
+dataBEUZmass12=subset(dataBEUZmass, treat=="1")
+dataBEUZmass16=subset(dataBEUZmass, treat=="2")
+dataUZvUZ=subset(dataBEUZmass, strain=="UZ")
+dataBEvBE=subset(dataBEUZmass, strain=="BE")
+datamass16be=subset(dataBEUZmass16,strain=="BE")
+datamass16uz=subset(dataBEUZmass16,strain=="UZ")
+datamass12uz=subset(dataBEUZmass12,strain=="UZ")
+datamass12be=subset(dataBEUZmass12,strain=="BE")
+#############################################
+#UZ16
+#View(datamass16uz)
+datamass16uz<-datamass16uz[-32,]
+
+datamass16uz$predmax<-predict(loess(mass~day,datamass16uz))
+max(datamass16uz$predmax)
+summary(datamass16uz)
+
+datamass16uz%>%
+  dplyr::filter(predmax==0.11237042)
+
+test<-data.frame(x=datamass16uz$day,y=datamass16uz$predmax)
+
+test%>%
+  dplyr::filter(y==0.11237042)
+  #dplyr::summarise(max=max(predmax))%>%
+
+#day 5
+ggplot(test,aes(x,y))+geom_line()+geom_point()+stat_smooth(forumla=y~x^2)
+summary(lm(y~x+I(x^2),test))
+
+#UZ12
+#View(datamass12uz)
+datamass12uz<-datamass12uz
+
+datamass12uz$predmax<-predict(loess(mass~day,datamass12uz))
+max(datamass12uz$predmax)
+summary(datamass12uz)
+
+datamass12uz%>%
+  dplyr::filter(predmax==0.11278569)
+
+test<-data.frame(x=datamass12uz$day,y=datamass12uz$predmax)
+
+test%>%
+  dplyr::filter(y==0.11278569)
+  #dplyr::summarise(max=max(predmax))%>%
+
+#day 10
+ggplot(test,aes(x,y))+geom_line()+geom_point()+stat_smooth(forumla=y~x^2)
+summary(lm(y~x+I(x^2),test))
+
+#BE16
+#View(datamass16be)
+datamass16be<-datamass16be
+
+datamass16be$predmax<-predict(loess(mass~day,datamass16be))
+max(datamass16be$predmax)
+summary(datamass16be)
+View(datamass16be)
+datamass16be%>%
+  dplyr::filter(predmax==0.08872000)
+
+test<-data.frame(x=datamass16be$day,y=datamass16be$predmax)
+
+test%>%
+  dplyr::filter(y==0.08872000)
+  #dplyr::summarise(max=max(predmax))%>%
+
+#day 3
+ggplot(test,aes(x,y))+geom_line()+geom_point()+stat_smooth(forumla=y~x^2)
+summary(lm(y~x+I(x^2),test))
+
+#be12
+#View(datamass12be)
+datamass12be<-datamass12be
+
+datamass12be$predmax<-predict(loess(mass~day,datamass12be))
+max(datamass12be$predmax)
+summary(datamass12be)
+
+datamass12be%>%
+  dplyr::filter(predmax==0.09129416)
+
+test<-data.frame(x=datamass12be$day,y=datamass12be$predmax)
+
+test%>%
+  dplyr::filter(y==0.09129416)
+  #dplyr::summarise(max=max(predmax))%>%
+
+#day 8
+ggplot(test,aes(x,y))+geom_line()+geom_point()+stat_smooth(forumla=y~x^2)
+summary(lm(y~x+I(x^2),test))
+
+```
+
 ## Plots and data analysis for lipid mass during diapause
 ```{r} 
 #################### Data Prep ######################
 ##PC
 data=read_excel("/Users/jbrown/Documents/GitHub/Lipid_Quantification/Data/Extraction Samples JLM.xlsx",sheet = "CONTSAMPdf")
 
-file: energy
-sheet: energy
+#file: energy
+#sheet: energy
 
 dataWeDl=data1
 dataWeDl=subset(dataWeDl,photoperiod==12)
@@ -541,8 +657,8 @@ ggplot(data=dataLiDUZ,aes(x=sample_day,y=lipid_mass,color=treat))+
 ##PC
 data=read_excel("/Users/jbrown/Documents/GitHub/Lipid_Quantification/Data/Extraction Samples JLM.xlsx",sheet = "CONTSAMPdf")
 
-file: energy
-sheet: energy
+#file: energy
+#sheet: energy
 
 data=subset(data,treat!="NA")
 data=subset(data,cohort!="20180131")
@@ -661,8 +777,8 @@ anova(mixedL6,mixedL7,mixedL8,mixed2,mixedL8)
 ##PC
 data=read_excel("/Users/jbrown/Documents/GitHub/Lipid_Quantification/Data/Extraction Samples JLM.xlsx",sheet = "CONTSAMPdf")
 
-file: energy
-sheet: energy
+#file: energy
+#sheet: energy
 
 
 dataLeDl=data1
