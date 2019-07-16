@@ -1,0 +1,156 @@
+Blast4-request ::= {
+  body queue-search {
+    program "blastn",
+    service "wgs",
+    queries bioseq-set {
+      seq-set {
+        seq {
+          id {
+            local str "Query_49975"
+          },
+          descr {
+            user {
+              type str "CFastaReader",
+              data {
+                {
+                  label str "DefLine",
+                  data str ">"
+                }
+              }
+            }
+          },
+          inst {
+            repr raw,
+            mol na,
+            length 1159,
+            seq-data ncbi2na '18BA0DE49B80AF2C7EC7BBFC33D0C0FCF9BC530F3B0ACAEB
+CAD4FEFDEDFFF837FDFFF3FEFCC0EC747CA46F37D7E48E312383F2CBFEF262E797EBC9273A2F4B
+E469AB3C58B549C196A1EE78E021B62095C527A976166114117EF7D2711ED8604196998288E106
+5F59DE7C6F07C021A47D2914D569B110E9F65067C611504003EFC4DAE9844AED440F63C5B14012
+5D01F8134680904DE903BFC4006B773F451F35E14809BDBF100384A7C876E5A078E86F0A419EBA
+57A00AB8CB32FC77FA3AA178A687DA2A9AB7189EA76C43B83AFD04786D06B87EC7DD84DA39CFC5
+2BE1A811EE482F679BF561373ABF9FD8AA84248D371A048812EE399785785D213BDA638C100702
+18ACD8106F510C0F24080F32C5C4C4A8F00ECC5C7045CEF30430AE4303A3383C'H
+          }
+        }
+      }
+    },
+    subject database "WGS_VDB://GAHP01 WGS_VDB://GAVD01 tsa_nt",
+    algorithm-options {
+      {
+        name "EvalueThreshold",
+        value cutoff e-value { 1, 10, 1 }
+      },
+      {
+        name "UngappedMode",
+        value boolean FALSE
+      },
+      {
+        name "PercentIdentity",
+        value real { 0, 10, 0 }
+      },
+      {
+        name "HitlistSize",
+        value integer 100
+      },
+      {
+        name "EffectiveSearchSpace",
+        value big-integer 0
+      },
+      {
+        name "DbLength",
+        value big-integer 0
+      },
+      {
+        name "WindowSize",
+        value integer 0
+      },
+      {
+        name "DustFiltering",
+        value boolean TRUE
+      },
+      {
+        name "RepeatFiltering",
+        value boolean FALSE
+      },
+      {
+        name "MaskAtHash",
+        value boolean TRUE
+      },
+      {
+        name "DustFilteringLevel",
+        value integer 20
+      },
+      {
+        name "DustFilteringWindow",
+        value integer 64
+      },
+      {
+        name "DustFilteringLinker",
+        value integer 1
+      },
+      {
+        name "GapXDropoff",
+        value real { 6, 10, 1 }
+      },
+      {
+        name "GapXDropoffFinal",
+        value real { 1, 10, 2 }
+      },
+      {
+        name "GapExtnAlgorithm",
+        value integer 1
+      },
+      {
+        name "MismatchPenalty",
+        value integer -2
+      },
+      {
+        name "MatchReward",
+        value integer 1
+      },
+      {
+        name "GapOpeningCost",
+        value integer 0
+      },
+      {
+        name "StrandOption",
+        value strand-type both-strands
+      },
+      {
+        name "WordSize",
+        value integer 28
+      }
+    },
+    program-options {
+      {
+        name "EntrezQuery",
+        value string "txid29057 [ORGN]"
+      }
+    },
+    format-options {
+      {
+        name "Web_JobTitle",
+        value string "O. furnacalis DAP nt vs. O. nubilalis TSA"
+      },
+      {
+        name "Web_OrganismName",
+        value string "Ostrinia nubilalis (taxid:29057)"
+      },
+      {
+        name "Web_NewWindow",
+        value boolean TRUE
+      },
+      {
+        name "Web_ShortQueryAdjust",
+        value boolean TRUE
+      },
+      {
+        name "Web_DBGroup",
+        value string "wgsOrg"
+      }
+    }
+  }
+}
+
+

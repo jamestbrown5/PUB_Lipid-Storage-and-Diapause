@@ -1,0 +1,1151 @@
+---
+title: "Respirometry Distributions"
+editor_options: null
+chunk_output_type: inline
+output: html_document
+df_print: paged
+---
+### Goal: Rear UZ and BE at 23C at 16:8 and 12:12 L:D regimens (UZ12, UZ16, BE12, BE16). Track CO2 production as a function of number of days after molting into the 5th instar. Track average weight gain as a function of number of days after molting into the 5th instar. Compare CO2 production and weight gain within strain and between L:D then compare L:D between strains 
+
+##Call Data
+````{r}
+library(splines)
+library(stats)
+library(readxl)
+library(ggplot2)
+library(nlme)
+library(lme4)
+library(lmerTest)
+library(ez)
+library(lsr)
+library(dplyr)
+library(tidyr)
+library(MASS)
+library(doBy)
+library(plyr)
+
+#############--------------Read in the data-----------------######################
+#PC
+setwd("/Users/jbrown/Documents/GitHub/Respirometry/Data")
+data=read_excel("Respir.xlsx")
+
+#data=read_excel("/Users/JamesB/Google Drive/Graduate School/Self_JamesTBrown/GitHub/Rearing/Data/respir_pupa data.xlsx", sheet = "Sheet1")
+str(data)
+#data$treat<-as.factor(data$treatment)
+#ggplot(data,aes(x=day,color=strain,fill=strain))+
+#  geom_histogram()+
+#  facet_grid(strain~treat)
+
+#ggplot(data, aes(x=day))+
+#  geom_density(alpha=.3)+
+#  facet_wrap(treat~strain)+
+#  ggtitle("Stages")
+
+#MAC
+#data=read_excel("/Users/JamesB/Google Drive/Graduate School/Self_JamesTBrown/GitHub/Respirometry/Data/Respir.xlsx", sheet = "Sheet1")
+
+############## Data Prep ###################
+data=subset(data, VCO2!="NA") # Remove NAs from df
+data=subset(data, syringe!="Blank Control") #Removing "Blank Control" syringes
+data$syringe=as.character(data$syringe) #Set "syringe" as a character
+data$strain<-as.factor(data$strain) #set strain as ind var
+data$treat<-as.factor(data$treat) #set treat as factor as ind var
+#data$day<-as.factor(data$day)
+data$stage<-as.factor(data$stage)
+#str(data)
+````
+## BE & UZ reps
+```{r}
+##BE Rep 1##
+dataBEUZp=data
+dataBEUZp=subset(dataBEUZp,stage=="L"|stage=="P")
+dataBEUZp=subset(dataBEUZp, treat=="1"|treat=="2")
+dataBEUZp=subset(dataBEUZp, Tray!="12,23 1201-01")
+dataBEUZp=subset(dataBEUZp, Tray!="12,23 1201-02")
+dataBEUZp=subset(dataBEUZp, Tray!="16,23 1202")
+dataBEUZp=subset(dataBEUZp,Tray!="16,23 1201")
+#dataBEr1p=subset(dataBEr1p, treat=="2")
+#dataBEr1p=subset(dataBEUZp, day<=30)
+#Stages: Change Over Time
+
+dataBEUZp=subset(dataBEUZp,strain=="BE")
+ggplot(dataBEUZp, aes(x=day, fill=stage))+
+  geom_histogram(binwidth=.5, alpha=.5, position="dodge")+
+  ggtitle("Stages")+
+  scale_x_continuous(breaks=pretty(dataBEUZp$day, n=43))+ 
+  facet_grid(treat~strain, scales ="free_y")+
+  ylab("# of Insects in each stage")+xlab("Day")
+
+ggplot(dataBEUZp, aes(x=day, fill=stage))+
+  geom_density(alpha=.3)+   
+  facet_grid(treat~strain, scales ="free_y")+
+  ggtitle("Stages")
+
+ggplot(data, aes(x=day, fill=stage))+
+  geom_density(alpha=.3)+
+  facet_wrap(~treat,scales="free_y")+
+  ggtitle("Stages")
+```
+## comparison between definite diapausing BE's and the UZ's in diapause conditions
+```{r}
+dataBEpupa=subset(dataBEUZp,Tray=="12,23 0208")
+dataBEpupa=subset(dataBEpupa,strain=="BE")
+dataBEpupa=subset(dataBEpupa,syringe!="51")
+dataBEpupa=subset(dataBEpupa,syringe!="56")
+dataBEpupa=subset(dataBEpupa,syringe!="62")
+dataBEpupa=subset(dataBEpupa,syringe!="64")
+dataBEpupa=subset(dataBEpupa,syringe!="68")
+dataBEpupa=subset(dataBEpupa,syringe!="69")
+dataBEpupa=subset(dataBEpupa,syringe!="75")
+dataBEpupa=subset(dataBEpupa,co2_hourly!="NA")
+dataBEres=subset(dataBEUZp,Tray=="12,23 0208")
+dataBEres=subset(dataBEres,syringe=="51"|syringe=="56"|syringe=="62"|syringe=="64"|syringe=="68"|syringe=="69"|syringe=="75")
+dataBEUZres=dataBEUZp
+
+diap_notprog=rbind(dataBEUZres,dataBEpupa)
+
+ggplot(data=diap_notprog,aes(x=day,y=co2_hourly_mass,group=strain,color=strain))+
+  stat_summary(fun.y=mean, geom="line")+
+  scale_color_manual(values=c(UZ="purple",BE="orange"))+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  theme_classic()+
+  facet_wrap(~treat)+
+  scale_x_continuous(breaks=pretty(diap_notprog$day, n=30))+
+  ggtitle("Change in CO2 x Mass Production Early Termination BE larvae")+
+  ylab("CO2")+xlab("Day")
+
+defdiap=rbind(dataBEres,dataBEUZres)
+
+ggplot(data=defdiap,aes(x=day,y=co2_hourly_mass,group=strain,color=strain))+
+  stat_summary(fun.y=mean, geom="line")+
+  scale_color_manual(values=c(UZ="purple",BE="orange"))+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  theme_classic()+
+  facet_wrap(~treat)+
+  scale_x_continuous(breaks=pretty(defdiap$day, n=30))+
+  ggtitle("Change in CO2 x Mass Production True Diapausing BE Larvae")+
+  ylab("CO2")+xlab("Day")
+
+
+ggplot(data=dataBEUZp,aes(x=day,y=co2_hourly_mass,group=strain,color=strain))+
+  stat_summary(fun.y=mean, geom="line")+
+  scale_color_manual(values=c(UZ="purple",BE="orange"))+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  theme_classic()+
+  facet_wrap(~treat)+
+  scale_x_continuous(breaks=pretty(defdiap$day, n=30))+
+  ggtitle("Change in CO2 x Mass Production w/o Separation")+
+  ylab("CO2")+xlab("Day")
+
+#modnotrpog=lmer(co2_hourly_mass~strain*treat+(1|day),diap_notprog)
+#moddefdiap=lmer(co2_hourly_mass~strain*treat+(1|day),defdiap)
+#modall=lmer(co2_hourly_mass~strain*treat+(1|day),dataBEUZp)
+#summary(modnotrpog)
+#summary(moddefdiap)
+#summary(modall)
+
+
+```
+
+##Dataframe Setup
+````{r}
+##########################################
+#df BE Rep1 Stages Plots and Data Analysis
+##########################################
+dataBEr1s=data #subset of main df into BE rep1
+dataBEr1s=subset(dataBEr1s, treat=="1" | treat=="2")
+dataBEr1s=subset(dataBEr1s, Tray=="12,23 1201-01"|Tray=="12,23 1201-02"|Tray=="16,23 1202"|Tray=="16,23 1201")
+
+##########################################
+#df BE Rep2 Stages Plots and Data Analysis
+##########################################
+dataBEr2s=data #subset of main df into BE rep 2
+dataBEr2s=subset(dataBEr2s, treat=="1" | treat=="2")
+dataBEr2s=subset(dataBEr2s, Tray=="16,23 0208" | Tray=="12,23 0208")
+
+##########################################
+#df UZ Rep1 Stages Plots and Data Analysis
+##########################################
+dataUZr1s=data #subset of main df into UZ rep 1
+dataUZr1s=subset(dataUZr1s, treat=="1" | treat=="2")
+dataUZr1s=subset(dataUZr1s, Tray=="16,23 1228" | Tray=="12,23 1228")
+```
+## Treatment comparison of chainges in CO2 BE rep 2 and UZ rep 1 with analysis
+```{r}
+#Larva CO2: Change over time
+dataBEUZ=subset(data, stage=="L")
+dataBEUZ=subset(dataBEUZ,Tray!="12,23 1201-01")
+dataBEUZ=subset(dataBEUZ,Tray!="12,23 1201-02")
+dataBEUZ=subset(dataBEUZ,Tray!="16,23 1202")
+dataBEUZ=subset(dataBEUZ,Tray!="16,23 1201")
+dataBEUZ12=subset(dataBEUZ, treat=="1")
+dataBEUZ16=subset(dataBEUZ, treat=="2")
+
+dataBEUZf=subset(dataBEUZ,treat=="1"|treat=="2")
+ggplot(data=dataBEUZf,aes(x=day,y=co2_hourly,group=treat,color=treat))+
+  stat_summary(fun.y=mean, geom="line")+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  theme_classic()+
+  scale_color_manual(values=c("1"="blue","2"="darkgreen"))+
+  scale_x_continuous(breaks=pretty(dataBEUZf$day, n=30))+
+  ggtitle("Change in CO2 Production")+
+  ylab("CO2")+xlab("Day")
+
+ggplot(data=dataBEUZ12,aes(x=day,y=co2_hourly,group=strain,color=strain))+
+  stat_summary(fun.y=mean, geom="line")+
+  facet_grid(strain~treat)+
+  scale_color_manual(values=c(UZ="purple",BE="orange"))+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  theme_classic()+
+  facet_wrap(~treat)+
+  scale_x_continuous(breaks=pretty(dataBEUZ12$day, n=30))+
+  ggtitle("Change in CO2 Production")+
+  ylab("CO2")+xlab("Day")
+
+ggplot(data=dataBEUZ16,aes(x=day,y=co2_hourly,group=strain,color=strain))+
+  stat_summary(fun.y=mean, geom="line")+
+  facet_grid(strain~treat)+
+  scale_color_manual(values=c(UZ="purple",BE="orange"))+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  theme_classic()+
+  facet_wrap(~treat)+
+  scale_x_continuous(breaks=pretty(dataBEUZ16$day, n=10))+
+  ggtitle("Change in CO2 Production")+
+  ylab("CO2")+xlab("Day")
+
+data16be=subset(dataBEUZ16,strain=="BE")
+data16be=subset(data16be,day=="4")
+data16uz=subset(dataBEUZ16,strain=="UZ")
+data16uz=subset(data16uz,day=="4")
+treatpeaks16=rbind(data16be,data16uz)
+#View(treatpeaks16)
+modtreatpeaks16=lm(co2_hourly~strain,treatpeaks16)
+summary(modtreatpeaks16)
+
+databe=subset(dataBEUZ12,strain=="BE")
+databe=subset(databe,day=="5")
+datauz=subset(dataBEUZ12,strain=="UZ")
+datauz=subset(datauz,day=="6")
+treatpeaks=rbind(databe,datauz)
+#View(treatpeaks)
+modtreatpeaks=lm(co2_hourly~strain,treatpeaks)
+summary(modtreatpeaks)
+
+treatpeaks12and16=rbind(treatpeaks16,treatpeaks)
+bothpeaks=lm(co2_hourly~treat,treatpeaks12and16)
+summary(bothpeaks)
+
+ggplot(treatpeaks12and16,aes(x=treat,y=co2_hourly,fill=strain))+
+  geom_boxplot()+
+  theme_classic()+
+  scale_fill_manual(values=c(UZ="purple",BE="orange"))+
+  ggtitle("Day of Peak Metabolic Activity")+
+  labs(y=expression(CO[2]*(mu*L/hr)),x="Strains")
+```
+
+## Treatment comparison of chainges in CO2 x Mass BE rep 2 and UZ rep 1 with analysis
+```{r}
+#Larva CO2 x Mass: Change over time
+dataBEUZm=subset(data, stage=="L")
+dataBEUZm=subset(dataBEUZm,Tray!="12,23 1201-01")
+dataBEUZm=subset(dataBEUZm,Tray!="12,23 1201-02")
+dataBEUZm=subset(dataBEUZm,Tray!="16,23 1202")
+dataBEUZm=subset(dataBEUZm,Tray!="16,23 1201")
+dataBEUZm12=subset(dataBEUZm, treat=="1")
+dataBEUZm16=subset(dataBEUZm, treat=="2")
+
+dataBEUZmf=subset(dataBEUZm,treat=="1"|treat=="2")
+ggplot(data=dataBEUZmf,aes(x=day,y=co2_hourly_mass,group=treat,color=treat))+
+  stat_summary(fun.y=mean, geom="line")+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  theme_classic()+
+  scale_color_manual(values=c("1"="blue","2"="darkgreen"))+
+  scale_x_continuous(breaks=pretty(dataBEUZmf$day, n=30))+
+  ggtitle("Change in CO2 x Mass Production")+
+  ylab("CO2 x Mass")+xlab("Day")
+
+ggplot(data=dataBEUZm12,aes(x=day,y=co2_hourly_mass,group=strain,color=strain))+
+  stat_summary(fun.y=mean, geom="line")+
+  facet_grid(strain~treat)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  theme_classic()+
+  scale_color_manual(values=c(UZ="purple",BE="orange"))+
+  facet_wrap(~treat)+
+  scale_x_continuous(breaks=pretty(dataBEUZm12$day, n=30))+
+  ggtitle("Change in CO2 x Mass Production")+
+  ylab("CO2 x Mass")+xlab("Day")
+
+ggplot(data=dataBEUZm16,aes(x=day,y=co2_hourly_mass,group=strain,color=strain))+
+  stat_summary(fun.y=mean, geom="line")+
+  facet_grid(strain~treat)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  theme_classic()+
+  scale_color_manual(values=c(UZ="purple",BE="orange"))+
+  facet_wrap(~treat)+
+  scale_x_continuous(breaks=pretty(dataBEUZm16$day, n=10))+
+  ggtitle("Change in CO2 x Mass Production")+
+  ylab("CO2 x Mass")+xlab("Day")
+
+datam16be=subset(dataBEUZm16,strain=="BE")
+datam16be=subset(datam16be,day=="4")
+datam16uz=subset(dataBEUZm16,strain=="UZ")
+datam16uz=subset(datam16uz,day=="2")
+treatmpeaks16=rbind(datam16be,datam16uz)
+#View(treatmpeaks16)
+modtreatmpeaks16=lm(co2_hourly_mass~strain,treatmpeaks16)
+summary(modtreatmpeaks16)
+
+datambe=subset(dataBEUZm12,strain=="BE")
+datambe=subset(datambe,day=="1")
+datamuz=subset(dataBEUZm12,strain=="UZ")
+datamuz=subset(datamuz,day=="2")
+treatmpeaks=rbind(datambe,datamuz)
+#View(treatmpeaks)
+modtreatmpeaks=lm(co2_hourly_mass~strain,treatmpeaks)
+summary(modtreatmpeaks)
+
+treatmpeaks12and16=rbind(treatmpeaks16,treatmpeaks)
+bothmpeaks=lm(co2_hourly_mass~treat,treatmpeaks12and16)
+summary(bothmpeaks)
+
+ggplot(treatmpeaks12and16,aes(x=treat,y=co2_hourly_mass,fill=strain))+
+  geom_boxplot()+
+  theme_classic()+
+  scale_fill_manual(values=c(UZ="purple",BE="orange"))+
+  ggtitle("Day of Peak Metabolic Activity Weighted by Wet Mass")+
+  labs(y=expression(CO[2]*'/ Wet Mass' (mu*L/hr/g)),x="Strains")
+```
+## Treatment comparison of chainges in Mass BE rep 2 and UZ rep 1 with analysis
+```{r}
+#Larva Mass: Change over time
+dataBEUZmass=subset(data, stage=="L")
+dataBEUZmass=subset(dataBEUZmass, stage!="P")
+dataBEUZmass=subset(dataBEUZmass,Tray!="12,23 1201-01")
+dataBEUZmass=subset(dataBEUZmass,Tray!="12,23 1201-02")
+dataBEUZmass=subset(dataBEUZmass,Tray!="16,23 1202")
+dataBEUZmass=subset(dataBEUZmass,Tray!="16,23 1201")
+dataBEUZmass12=subset(dataBEUZmass, treat=="1")
+dataBEUZmass16=subset(dataBEUZmass, treat=="2")
+dataUZvUZ=subset(dataBEUZmass, strain=="UZ")
+dataBEvBE=subset(dataBEUZmass, strain=="BE")
+
+#View(dataBEvBE)
+
+dataBEUZmass=subset(dataBEUZmass,treat=="1"|treat=="2")
+ggplot(data=dataBEvBE,aes(x=day,y=co2_min_mass,group=treat,color=treat))+
+  stat_summary(fun.y=mean, geom="line",shape=25,size=1)+
+  stat_summary(fun.y=mean, geom="point",shape=19,size=2)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05,size=1,shape=21) +
+  theme(axis.text.x  = element_text(vjust=0.5, size=16),axis.text.y  = element_text(vjust=0.5, size=16))+
+  scale_x_continuous(breaks = seq(0, 40, by=5), limits=c(0,40))+
+  scale_color_manual(values=c("1"="pink","2"="black"))+
+  ggtitle("Change in CO2 Production Be")+
+  ylab("Mass")+xlab("Day")
+
+ggplot(data=dataUZvUZ,aes(x=day,y=co2_min_mass,group=treat,color=treat))+
+  stat_summary(fun.y=mean, geom="line",shape=25,size=1)+
+  stat_summary(fun.y=mean, geom="point",shape=19,size=2)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05,size=1,shape=21) +
+  theme(axis.text.x  = element_text(vjust=0.5, size=16),axis.text.y  = element_text(vjust=0.5, size=16))+
+  scale_x_continuous(breaks = seq(0, 40, by=5), limits=c(0,40))+
+  scale_color_manual(values=c("1"="lightblue","2"="black"))+
+  ggtitle("Change in CO2 Production UZ")+
+  ylab("Mass")+xlab("Day")
+
+
+ggplot(data=dataBEUZ16,aes(x=day,y=co2_min_mass,color=strain))+
+  stat_summary(fun.y=mean, geom="line",shape=25,size=1)+
+  stat_summary(fun.y=mean, geom="point",shape=19,size=2)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05,size=1,shape=21) +
+  theme(axis.text.x = element_text(vjust=0.5, size=16),
+        axis.text.y  = element_text(vjust=0.5, size=16))+
+  scale_x_continuous(breaks = seq(0, 10, by=2), limits=c(0,10))+
+  scale_fill_manual(values=c("1"="lightblue","2"="black"))+
+  ggtitle("Change in Mass Production")+
+  ylab("co2")+xlab("Day")
+
+  
+
+ggplot(data=dataBEUZ12,aes(x=day,y=co2_min_mass,color=strain))+
+  stat_summary(fun.y=mean, geom="line",shape=25,size=1)+
+  stat_summary(fun.y=mean, geom="point",shape=19,size=2)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05,size=1,shape=21) +
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05,size=1,shape=21) +
+  theme(axis.text.x = element_text(vjust=0.5, size=16),
+        axis.text.y  = element_text(vjust=0.5, size=16))+
+  scale_x_continuous(breaks = seq(0, 40, by=5), limits=c(0,40))+
+  ggtitle("Change in CO2 Production Be")+
+  ylab("co2")+xlab("Day")
+
+
+ggplot(data=dataBEUZ16,aes(x=day,y=mass,color=strain))+
+  stat_summary(fun.y=mean, geom="line",shape=25,size=1)+
+  stat_summary(fun.y=mean, geom="point",shape=19,size=2)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05,size=1,shape=21) +
+  theme(axis.text.x = element_text(vjust=0.5, size=16),
+        axis.text.y  = element_text(vjust=0.5, size=16))+
+  scale_x_continuous(breaks = seq(0, 10, by=2), limits=c(0,10))+
+  scale_fill_manual(values=c("1"="lightblue","2"="black"))+
+  ggtitle("Change in Mass Production")+
+  ylab("Mass")+xlab("Day")
+
+  
+
+ggplot(data=dataBEUZ12,aes(x=day,y=mass,color=strain))+
+  stat_summary(fun.y=mean, geom="line",shape=25,size=1)+
+  stat_summary(fun.y=mean, geom="point",shape=19,size=2)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05,size=1,shape=21) +
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05,size=1,shape=21) +
+  theme(axis.text.x = element_text(vjust=0.5, size=16),
+        axis.text.y  = element_text(vjust=0.5, size=16))+
+  scale_x_continuous(breaks = seq(0, 40, by=5), limits=c(0,40))+
+  ggtitle("Change in CO2 Production Be")+
+  ylab("Mass")+xlab("Day")
+
+
+datamass16be=subset(dataBEUZmass16,strain=="BE")
+datamass16uz=subset(dataBEUZmass16,strain=="UZ")
+datamass12uz=subset(dataBEUZmass12,strain=="UZ")
+datamass12be=subset(dataBEUZmass12,strain=="BE")
+
+
+datamass16uz=subset(dataBEUZmass16,strain=="UZ")
+#datamass16uz=subset(datamass16uz,day=="6")
+treatmasspeaks16=rbind(datamass16be,datamass16uz)
+#View(treatmasspeaks16)
+modtreatmasspeaks16=lm(mass~strain,treatmasspeaks16)
+summary(modtreatmasspeaks16)
+
+BE16UZ16wetmass=lm(mass~strain+day, data=dataBEUZ16)
+summary(BE16UZ16wetmass)
+
+datamassbe=subset(dataBEUZmass12,strain=="BE")
+#datamassbe=subset(datamassbe,day=="10")
+datamassuz=subset(dataBEUZmass12,strain=="UZ")
+#datamassuz=subset(datamassuz,day=="10")
+treatmasspeaks=rbind(datamassbe,datamassuz)
+#View(treatmasspeaks)
+modtreatmasspeaks=lm(mass~strain,treatmasspeaks)
+summary(modtreatmasspeaks)
+
+dataBEUZ=subset(dataBEUZ,treat!="3")
+dataBEUZ=subset(dataBEUZ,treat!="4")
+wetmasspeakBEUZ=aggregate(max ~ day*strain+treat+syringe, data = dataBEUZ, FUN = max)
+View(wetmasspeakBEUZ)
+datamassmax=lm(mass~day,wetmasspeakBEUZ)
+summary(datamassmax)
+
+
+
+dfBE16=lm(mass~day,dfBE16)
+summary(dfBE16)
+wetmasspeakUZ16=aggregate(mass ~ syringe, data = datamass16uz, FUN = max ) 
+dfUZ16=merge(wetmasspeakUZ16,datamass16uz)
+summary(dfUZ16)
+dfUZ16=lm(mass~day,dfUZ16)
+summary(dfUZ16)
+wetmasspeakBE12=aggregate(mass ~ syringe, data = datamass12be, FUN = max ) 
+dfBE12=merge(wetmasspeakBE12,datamass12be)
+summary(dfBE12)
+dfBE12=lm(mass~day,dfBE12)
+summary(dfBE12)
+wetmasspeakUZ12=aggregate(mass ~ syringe, data = datamass12uz, FUN = max ) 
+dfUZ12=merge(wetmasspeakUZ12,datamass12uz)
+summary(dfUZ12)
+dfUZ12=lm(mass~day,dfUZ12)
+summary(dfUZ12)
+
+ggplot(treatmasspeaks12and16,aes(x=treat,y=mass,fill=strain))+
+  geom_boxplot()+
+  theme_classic()+
+  scale_fill_manual(values=c(UZ="purple",BE="orange"))+
+  ggtitle("Day of Peak Mass")+
+  ylab("Mass (g)")+
+  xlab("Strains")
+
+ggplot(treatmasspeaks12and16,aes(x=treat,y=co2_min_mass,fill=treat))+
+  geom_boxplot()+
+  theme_classic()+
+  facet_wrap(~day)+
+  scale_fill_manual(values=c(UZ="purple",BE="orange"))+
+  ggtitle("CO2 production between treatmnets")+
+  ylab("CO2 production")+
+  xlab("Treatment")
+
+
+treatmasspeaks12and16=rbind(treatmasspeaks16,treatmasspeaks)
+BE16peaks=lm(mass~datamass16be$day,datamass16be)
+summary(BE16peaks)
+bothmasspeaks=lm(mass~treat,treatmasspeaks12and16)
+summary(bothmasspeaks)
+
+
+bothmasspeaks=lm(co2_min_mass~treat,treatmasspeaks12and16)
+summary(bothmasspeaks)
+
+uzcomp=rbind(datamassuz,datamass16uz)
+uzpeak=lm(co2_min_mass~treat,uzcomp)
+summary(uzpeak)
+
+becomp=rbind(datamassbe,datamass16be)
+bepeak=lm(co2_min_mass~treat,becomp)
+summary(bepeak)
+
+peak12=lm(co2_min_mass~strain,treatmasspeaks)
+summary(peak12)
+
+peak16=lm(co2_min_mass~strain,treatmasspeaks16)
+summary(peak16)
+```
+
+
+
+```{r}
+dataUZ12=subset(dataBEUZ12,strain=="UZ")
+ggplot(data=dataUZ12,aes(x=day,y=co2_hourly,group=treat,color=treat))+
+  stat_summary(fun.y=mean, geom="line")+
+  facet_grid(strain~treat)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  theme_classic()+
+  geom_vline(xintercept = 6)+
+  scale_x_continuous(breaks=pretty(dataUZ12$day, n=30))+
+  ggtitle("Change in CO2 Production")+
+  ylab("CO2")+xlab("Day")
+
+dataBE12=subset(dataBEUZ12,strain=="BE")
+ggplot(data=dataBE12,aes(x=day,y=co2_hourly,group=treat,fill=treat))+
+  stat_summary(fun.y=mean, geom="line")+
+  facet_grid(strain~treat)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  theme_classic()+
+  geom_vline(xintercept = 5)+
+  scale_x_continuous(breaks=pretty(dataBE12$day, n=30))+
+  ggtitle("Change in CO2 Production")+
+  ylab("CO2")+xlab("Day")
+
+dataUZ16=subset(dataBEUZ16,strain=="UZ")
+ggplot(data=dataUZ16,aes(x=day,y=co2_hourly,group=treat,color=treat))+
+  stat_summary(fun.y=mean, geom="line")+
+  facet_grid(strain~treat)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  theme_classic()+
+  geom_vline(xintercept = 4)+
+  scale_x_continuous(breaks=pretty(dataUZ16$day, n=9))+
+  ggtitle("Change in CO2 Production")+
+  ylab("CO2")+xlab("Day")
+
+dataBE16=subset(dataBEUZ16,strain=="BE")
+ggplot(data=dataBE16,aes(x=day,y=co2_hourly,group=treat,color=treat))+
+  stat_summary(fun.y=mean, geom="line")+
+  facet_grid(strain~treat)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  theme_classic()+
+  geom_vline(xintercept = 4)+
+  scale_x_continuous(breaks=pretty(dataBE16$day, n=9))+
+  ggtitle("Change in CO2 Production")+
+  ylab("CO2")+xlab("Day")
+```
+
+```{r}
+###
+# BE 12
+####
+
+dataBEmode2=subset(dataBEUZ,strain=="BE")
+dataBEmode2=subset(dataBEmode2,treat=="1")
+#dataBEmode2=subset(dataBEmode2,start=="20180224")
+ggplot(data=dataBEmode2,aes(x=day,fill=start,color=start))+
+  geom_density(alpha=.2,adjust=3)+
+  facet_wrap(~start)+
+  theme_classic()+
+  geom_vline(xintercept = 6)+
+  scale_x_continuous(breaks=pretty(dataBEmode2$day, n=50))+ 
+  ggtitle("Change in CO2 Production")+
+  ylab("CO2")+xlab("Day")
+
+getmode <- function(b) {
+   uniqv <- unique(b)
+   uniqv[which.max(tabulate(match(b, uniqv)))]
+}
+getmode <- function(u) {
+   uniqv <- unique(u)
+   uniqv[which.max(tabulate(match(u, uniqv)))]
+}
+b=c(dataBEmode2$co2_hourly)
+resultb=getmode(b)
+print(resultb)
+u=c(dataBEmode2$day)
+resultu=getmode(u)
+print(resultu)
+
+###
+# BE 16 
+####
+dataBEmode3=subset(dataBEUZ,strain=="BE")
+dataBEmode3=subset(dataBEmode3,treat=="2")
+#dataBEmode3=subset(dataBEmode3,start=="20180224")
+ggplot(data=dataBEmode3,aes(x=day,fill=start,color=start))+
+  geom_density(alpha=.2,adjust=3)+
+  facet_wrap(~start)+
+  theme_classic()+
+  geom_vline(xintercept = 4)+
+  scale_x_continuous(breaks=pretty(dataBEmode3$day, n=8))+ 
+  ggtitle("Change in CO2 Production")+
+  ylab("CO2")+xlab("Day")
+
+getmode <- function(c) {
+   uniqv <- unique(c)
+   uniqv[which.max(tabulate(match(c, uniqv)))]
+}
+getmode <- function(d) {
+   uniqv <- unique(d)
+   uniqv[which.max(tabulate(match(d, uniqv)))]
+}
+e=c(dataBEmode3$co2_hourly)
+resulte=getmode(e)
+print(resulte)
+d=c(dataBEmode3$day)
+resultd=getmode(d)
+print(resultd)
+
+```
+
+```{r}
+#Larva CO2 by Mass: Change over time
+dataBEUZ=subset(data, stage=="L")
+dataBEUZ=subset(dataBEUZ,Tray!="12,23 1201-01"|Tray=="12,23 1201-02"|Tray=="16,23 1202"|Tray=="16,23 1201")
+dataBEUZcm=subset(dataBEUZ, treat=="1"|treat=="2")
+
+ggplot(data=dataBEUZcm,aes(x=day,y=co2_min_mass, color=treat,group=treat))+
+  stat_summary(fun.y=mean, geom="line")+
+  facet_grid(~strain)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  scale_x_continuous(breaks=pretty(dataBEUZcm$day, n=20))+
+  theme_bw()+
+  ggtitle("Change in CO2 Production Weighted by Mass")+
+  ylab("CO2 x Mass x Hour")+xlab("Day")
+
+
+
+#diaBE=subset(dataBEUZ,day=="6")
+#ndiaBE=subset(dataBE,day=="4")
+#dataBE=rbind(diaBE,ndiaBE)
+#dataBE=subset(dataBEUZcm,strain=="BE")
+#dataBE=subset(dataBe,day<=10)
+#modco2BE=lmer(co2_min_mass~treat + (1|day),data=dataBE)
+#summary(modco2BE)
+
+#diaUZ=subset(dataBEUZcm,day=="9")
+#ndiaUZ=subset(dataBE,day=="5")
+#dataUZ=rbind(diaUZ,ndiaUZ)
+#dataUZ=subset(dataBEUZcm,strain=="UZ")
+#dataUZ=subset(dataUZ,day<=10)
+#modco2UZ=lmer(co2_min_mass~treat + (1|day),data=dataUZ)
+#summary(modco2UZ)
+
+
+#ggplot(data=dataNDia,aes(x=day,y=mass,group=strain,color=strain))+
+  #stat_summary(fun.y=mean, geom="line",shape=18)+
+  #stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  #scale_fill_manual(values=c(UZ="purple",BE="orange"))+
+  #theme_bw()+
+  #ggtitle("BE and UZ Non Diapause")+
+  #ylab("Mass")+xlab("Day")
+#modco2mnd=lmer(co2_hourly_mass~strain + (1|day),data=dataNDia)
+#summary(modco2mnd)
+
+
+#ggplot(data=dataNDia,aes(x=day,y=co2_min_mass,group=strain,color=strain))+
+ # stat_summary(fun.y=mean, geom="line",shape=18)+
+  #stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  #theme_bw()+
+  #ggtitle("BE and UZ Non Diapause")+
+  #ylab("CO2 x Min x Mass")+xlab("Day")
+
+
+
+
+dataUZUZUZ=subset(data,strain=="UZ")
+dataUZUZUZ=subset(dataUZUZUZ,treat=="1")
+dataUZUZUZ$term="Deep Diapause"
+
+dataBEpupa=subset(data,Tray=="12,23 0208")
+dataBEpupa=subset(dataBEpupa,strain=="BE")
+dataBEpupa=subset(dataBEpupa,syringe=="52"|syringe=="53"|syringe=="54"|syringe=="57"|syringe=="59"|syringe=="60"|syringe=="61"|syringe=="63"|syringe=="66"|syringe=="70"|syringe=="71"|syringe=="73"|syringe=="74")
+dataBEpupa$term="Shallow Diapause"
+
+dataBEres=subset(data,Tray=="12,23 0208")
+dataBEres=subset(dataBEres,strain=="BE")
+dataBEres=subset(dataBEres,syringe=="51"|syringe=="56"|syringe=="62"|syringe=="64"|syringe=="68"|syringe=="69"|syringe=="75")
+dataBEres$term="Deep Diapause"
+
+summary(dataBEpupa)
+summary(dataBEres)
+View(dataBEres)
+
+mod12=lm(mass~day,dataBEpupa)
+
+plot(mod12)
+summary(mod12)
+
+
+
+massdiff=rbind(dataBEpupa,dataBEres)
+#massdiff=rbind(dataUZUZUZ,massdiff)
+massdiff=subset(massdiff,co2_min_mass!="NA")
+massdiff=subset(massdiff,day!="41")
+massdiff=subset(massdiff,day!="43")
+View(massdiff)
+
+massdiff=subset(massdiff,day=="11")
+modco2peakshallow=lm(mass~term,data=massdiff)
+summary(massdiff)
+summary(modco2peakshallow)
+
+
+modaov12=aov(massdiff$mass~massdiff$term)
+summary(modaov12)
+
+
+ggplot(data=massdiff,aes(x=day,y=co2_min_mass,group=term,color=term))+
+  stat_summary(fun.y=mean, geom="line",shape=25,size=1)+
+  stat_summary(fun.y=mean, geom="point",shape=19,size=2)+
+  stat_summary(fun.data=mean_se, geom="errorbar",width=0.65,size=1,shape=21) +
+  scale_color_manual(values=c("Shallow Diapause" ="green", "Deep Diapause"="black"))+
+  theme(axis.text.x  = element_text(vjust=0.5, size=16),axis.text.y  = element_text(vjust=0.5, size=16))+
+  scale_x_continuous(breaks = seq(0, 40, by=5), limits=c(0,40))+
+  labs(y=expression(CO[2]*'/ Production' (mu*L/g/min)),x="Days in 5th Instar")
+  
+
+ggplot(data=massdiff,aes(x=day,y=mass,group=term,color=term))+
+  stat_summary(fun.y=mean, geom="line",shape=25,size=1)+
+  stat_summary(fun.y=mean, geom="point",shape=19,size=2)+
+  stat_summary(fun.data=mean_se, geom="errorbar",width=0.65,size=1,shape=21) +
+  scale_color_manual(values=c("Shallow Diapause" ="blue", "Deep Diapause"="orange"))+
+  theme(axis.text.x  = element_text(vjust=0.5, size=16),axis.text.y  = element_text(vjust=0.5, size=16))+
+  scale_x_continuous(breaks = seq(0, 40, by=5), limits=c(0,40))
+
+ggplot(data=massdiff,aes(x=day,y=co2_min_mass,group=term,color=term))+
+  stat_summary(fun.y=mean, geom="line",shape=18)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  theme_bw()+
+  ggtitle("Shallow vs Deep Diapause")+
+  ylab("CO2 x Min x Mass")+xlab("Day")
+
+
+
+
+dataBEearly=subset(dataBEpupa,day=="6")
+dataBElate=subset(dataBEres,day=="6")
+dataUZlate=subset(dataUZUZUZ,day=="9")
+Peakmass=rbind(dataBEearly,dataBElate)
+Peakmass=rbind(Peakmass,dataUZlate)
+Peakmass=subset(Peakmass,mass!="NA")
+Peakmass$Tray=as.factor(Peakmass$Tray)
+Peakmass$term=as.factor(Peakmass$term)
+str(Peakmass)
+
+modco2peakm=lm(co2_min_mass~term,data=massdiff)
+summary(modco2peakm)
+
+
+#Larva MASS: Change Over Time
+#dataBEUZm=data
+#dataBEUZm=subset(dataBEUZm, stage=="L")
+#dataBEUZm=subset(dataBEUZm,Tray!="12,23 1201-01"|Tray=="12,23 1201-02"|Tray=="16,23 1202"|Tray=="16,23 1201")
+#dataBEUZm=subset(dataBEUZm, treat=="1"|treat=="2")
+
+
+
+#modq=aov(co2_min_mass~term,data=Peakmass)
+#modq=aov(Peakmass, mass~term)
+#summary(modq)
+
+#plot(modq)
+
+#massaov <- with(myData.mean,
+#                  aov(stress ~ music * image +
+#                     Error(PID / (music * image)))
+#)
+
+
+ggplot(data=dataBEpupa,aes(x=day,y=mass))+
+  stat_summary(fun.y=mean, geom="line",shape=18)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  theme_bw()+
+  ggtitle("Early Terminators: Mass Peaks on Day 6")+
+  ylab("Mass")+xlab("Day")
+
+ggplot(data=dataBEpupa,aes(x=day,y=co2_min_mass))+
+  stat_summary(fun.y=mean, geom="line")+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  theme_bw()+
+  ggtitle("Early Terminators: Change in CO2 Production Weighted by Mass and Time")+
+  ylab("CO2 x Min x Mass")+xlab("Day")
+
+ggplot(data=dataBEres,aes(x=day,y=co2_min_mass))+
+  stat_summary(fun.y=mean, geom="line",shape=18)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  theme_bw()+
+  ggtitle("Late Terminators: Mass Peaks on Day 8")+
+  ylab("CO2 x Min x Mass")+xlab("Day")
+
+ggplot(data=dataBEres,aes(x=day,y=mass))+
+  stat_summary(fun.y=mean, geom="line",shape=18)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  theme_bw()+
+  ggtitle("Late Terminators: Mass Peaks on Day 8")+
+  ylab("Mass")+xlab("Day")
+
+dataUZUZ=subset(dataBEUZcm,strain=="UZ")
+dataUZUZ=subset(dataUZUZ,treat=="1")
+ggplot(data=dataBEUZcm,aes(x=day,y=co2_min_mass))+
+  stat_summary(fun.y=mean, geom="line")+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  scale_x_continuous(breaks=pretty(dataBE12$day, n=30))+
+  theme_bw()+
+  ggtitle("UZ12: Change in CO2 Production Weighted by Mass and Time")+
+  ylab("CO2 x Min x Mass")+xlab("Day")
+
+ggplot(data=dataBEUZcm,aes(x=day,y=mass))+
+  stat_summary(fun.y=mean, geom="line")+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  scale_x_continuous(breaks=pretty(dataBE12$day, n=30))+
+  theme()+
+  ggtitle("UZ12: Mass Peak on Day 10")+
+  ylab("Mass")+xlab("Day")
+```
+
+```{r}
+###
+#dataBEUZm=subset(data, stage=="L")
+#dataBEUZm=subset(dataBEUZm,Tray!="12,23 1201-01"|Tray=="12,23 1201-02"|Tray=="16,23 1202"|Tray=="16,23 1201")
+#dataBEUZm=subset(dataBEUZm,day<=9)
+#dataBEUZm=subset(dataBEUZm, treat=="1"|treat=="2")
+ggplot(data=dataBEUZm,aes(x=day,y=mass, color=strain,group=strain))+
+  stat_summary(fun.y=mean, geom="line")+
+  facet_grid(strain~treat)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  theme_classic()+
+  ylab("Mass")+xlab("Day")
+
+ggplot(data=dataBEUZm,aes(x=day,y=mass))+
+  geom_smooth()+
+  facet_wrap(~treat)+
+  geom_point()+
+  theme_classic()+
+  ggtitle("Change in  Mass")+
+  ylab("Mass")+xlab("Day")
+
+dataBE=subset(dataBEUZm,strain=="BE")
+#dataBE=subset(dataBe,day<=10)
+modco2m=lmer(mass~treat + (1|day),data=dataBE)
+summary(modco2m)
+
+dataUZ=subset(dataBEUZm,strain=="UZ")
+#dataUZ=subset(dataUZ,day<=10)
+modco2m=lmer(mass~treat + (1|day),data=dataUZ)
+summary(modco2m)
+
+dataDia=subset(dataBEUZm,treat=="1")
+#dataBE=subset(dataBe,day<=10)
+modco2md=lmer(mass~strain + (1|day),data=dataDia)
+summary(modco2md)
+
+dataNDia=subset(dataBEUZm,treat=="2")
+#dataUZ=subset(dataUZ,day<=10)
+modco2mnd=lmer(mass~strain + (1|day),data=dataNDia)
+summary(modco2mnd)
+###
+
+
+ggplot(dataBEUZm, aes(x=day,color=mass))+
+  geom_histogram(aes(fill=treat),alpha=.3)+
+  facet_grid(treat~strain, scales ="free_y")+
+  scale_x_continuous(breaks=pretty(dataBEUZm$day, n=25))+ 
+  ggtitle("Mass")
+
+ggplot(dataBEUZm, aes(x=day,color=mass))+
+  geom_density(aes(fill=treat),alpha=.3)+
+  facet_wrap(~treat)+
+  scale_x_continuous(breaks=pretty(dataBEUZm$day, n=25))+ 
+  ggtitle("Mass")
+```
+
+```
+
+##BE Rep 1: Changes in CO2, CO2 Weighted by Mass, Mass, and Stage, across time
+```{r} 
+
+##################
+#### BE REP 1 ####
+##################
+
+#Larva CO2: Change over time
+dataBEr1co2=subset(dataBEr1s, stage=="L")
+ggplot(data=dataBEr1co2,aes(x=day,y=co2_hourly))+
+  geom_smooth()+
+  facet_grid(treat~start, scales ="free_y")+
+  geom_point()+
+  theme_classic()+
+  ggtitle("BE Rep1 Change in CO2 Production")+
+  ylab("CO2")+xlab("Day")
+
+#Larva CO2 by Mass: Change over time
+dataBEr1co2m=subset(dataBEr1s, stage=="L")
+ggplot(data=dataBEr1co2m,aes(x=day,y=co2_hourly_mass))+
+  geom_smooth()+
+  facet_grid(treat~start, scales ="free_y")+
+  geom_point()+
+  theme_classic()+
+  ggtitle("BE Rep1 Change in CO2 Production Weighted by Mass")+
+  ylab("CO2 x Mass")+xlab("Day")
+
+#Larva MASS: Change Over Time
+dataBEr1m=dataBEr1s
+dataBEr1m=subset(dataBEr1m, stage=="L")
+ggplot(data=dataBEr1m,aes(x=day,y=mass))+
+  geom_line(aes(group=syringe,color=syringe))+
+  facet_grid(treat~start, scales ="free_y")+
+  stat_peaks(geom = "text") +
+  facet_wrap(~syringe)+
+  theme_minimal()+
+  ggtitle("BE Rep1 Larvae Mass Increase")+
+  ylab("Mass")+xlab("Day")
+
+ggplot(dataBEr1m, aes(x=day,color=mass))+
+  geom_density(aes(fill=treat),alpha=.3)+
+  facet_grid(treat~start, scales ="free_y")+
+  scale_x_continuous(breaks=pretty(dataBEr1m$day, n=25))+ 
+  ggtitle("BE Rep1 Mass")
+
+##BE Rep 1##
+dataBEr1p=subset(dataBEr1s,stage=="L"|stage=="P")
+#dataBEr1p=subset(dataBEr1p, treat=="2")
+dataBEr1p=subset(dataBEr1p, day<=30)
+#Stages: Change Over Time
+
+ggplot(dataBEr1p, aes(x=day, fill=stage))+
+  theme_classic()+
+  geom_histogram(binwidth=.5, alpha=.5, position="identity")+
+  scale_x_discrete(limits=c(1,2,3,4,5,6,7,8,9,10,11,13,15,17))+
+  ggtitle("BE Rep1 Stages")+
+  ylab("# of Insects in each stage")+xlab("Day")
+
+ggplot(dataBEr1p, aes(x=day, fill=stage))+
+  geom_density(alpha=.3)+   
+  facet_grid(treat~start, scales ="free_y")+
+  ggtitle("BE Rep1 Stages")
+```
+
+##BE Rep1 Stats
+```{r}
+##############################################
+###### BE Rep 1 Peak Mass Comaprison #########
+##############################################
+
+#fit first degree polynomial equation:
+fit  <- lm(mass~day, data = dataBEr1m)
+summary(fit)
+coef(fit)
+
+#second degree
+fit2 <- lm(mass~poly(day,2,raw=TRUE), data = dataBEr1m)
+summary(fit2)
+coef(fit2)
+
+#third degree
+fit3 <- lm(mass~poly(day,3,raw=TRUE), data = dataBEr1m)
+summary(fit3)
+coef(fit3)
+
+#fourth degree
+fit4 <- lm(mass~poly(day,4,raw=TRUE), data = dataBEr1m)
+summary(fit4)
+coef(fit4)
+
+anova(fit,fit2) #fit2
+anova(fit,fit3) #fit3
+anova(fit,fit4) #fit4 
+anova(fit2,fit3) #fit3
+anova(fit2,fit4) #fit4
+anova(fit3,fit4) #fit4
+```
+##BE Rep 2: Changes in CO2, CO2 Weighted by Mass, Mass, and Stage, across time
+```{r}
+##################
+#### BE REP 2 ####
+##################
+#Larva CO2: Change over time
+dataBEr2co2=subset(dataBEr2s, stage=="L")
+ggplot(data=dataBEr2co2,aes(x=day,y=co2_hourly))+
+  geom_smooth()+
+  facet_grid(treat~start, scales ="free_y")+
+  geom_point()+
+  theme_classic()+
+  ggtitle("BE Rep2 Change in CO2 Production")+
+  ylab("CO2")+xlab("Day")
+
+
+#Larva CO2 by Mass: Change over time
+dataBEr2co2m=subset(dataBEr2s, stage=="L")
+ggplot(data=dataBEr2co2m,aes(x=day,y=co2_hourly_mass))+
+  geom_smooth()+
+  facet_grid(treat~start, scales ="free_y")+
+  geom_point()+
+  theme_classic()+
+  ggtitle("BE Rep2 Change in CO2 Production Weighted by Mass")+
+  ylab("CO2 x Mass")+xlab("Day")
+
+
+#Larva MASS: Change Over Time
+dataBEr2m=dataBEr2s
+dataBEr2m=subset(dataBEr2m, stage=="L")
+ggplot(data=dataBEr2m,aes(x=day,y=mass))+
+  geom_line(aes(group=syringe,color=syringe))+
+  facet_grid(treat~start, scales ="free_y")+
+  geom_smooth()+
+  theme_classic()+
+  ggtitle("BE Rep2 Larvae Mass Increase")+
+  ylab("Mass")+xlab("Day")
+
+ggplot(dataBEr2m, aes(x=day,color=mass))+
+  geom_density(aes(fill=treat),alpha=.3)+
+  facet_grid(treat~start, scales ="free_y")+
+  scale_x_continuous(breaks=pretty(dataBEr2m$day, n=25))+ 
+  ggtitle("BE Non Diapause Rep1 Stages")
+
+##BE Rep 2##
+dataBEr2p=subset(dataBEr2s,stage=="L"|stage=="P")
+#dataBEr2p=subset(dataBEr2p, treat=="2")
+dataBEr2p=subset(dataBEr2p, day<=20)
+#Stages: Change Over Time
+
+ggplot(dataBEr2p, aes(x=day, fill=stage))+
+  geom_density(alpha=.3)+
+  facet_wrap(~treat, scales ="free_y")+
+  ggtitle("BE Non Diapause Rep2 Stages")
+
+```
+##UZ Rep 1: Changes in CO2, CO2 Weighted by Mass, Mass, and Stage, across time
+```{r}
+##################
+#### UZ REP 1 ####
+##################
+
+#Larva CO2: Change over time
+dataUZr1co2=subset(dataUZr1s, stage=="L")
+ggplot(data=dataUZr1co2,aes(x=day,y=co2_hourly))+
+  geom_smooth()+
+  facet_grid(treat~start, scales ="free_y")+
+  geom_point()+
+  theme_classic()+
+  ggtitle("UZ Rep1 Change in CO2 Production")+
+  ylab("CO2")+xlab("Day")
+
+
+#Larva CO2 by Mass: Change over time
+dataUZr1co2m=subset(dataUZr1s, stage=="L")
+ggplot(data=dataUZr1co2m,aes(x=day,y=co2_hourly_mass))+
+  geom_smooth()+
+  facet_grid(treat~start)+
+  geom_point()+
+  theme_classic()+
+  ggtitle("UZ Rep1 Change in CO2 Production Weighted by Mass")+
+  ylab("CO2 x Mass")+xlab("Day")
+
+
+#Larva MASS: Change Over Time
+dataUZr1m=dataUZr1s
+dataUZr1m=subset(dataUZr1m, stage=="L")
+ggplot(data=dataUZr1m,aes(x=day,y=mass))+
+  geom_line(aes(group=syringe,color=syringe))+
+  facet_grid(treat~start, scales ="free_y")+
+  geom_smooth()+
+  theme_classic()+
+  ggtitle("UZ Rep1 Larvae Mass Increase")+
+  ylab("Mass")+xlab("Day")
+
+ggplot(dataUZr1m, aes(x=day,color=mass))+
+  geom_density(aes(fill=treat),alpha=.3)+
+  facet_grid(treat~start, scales ="free_y")+
+  scale_x_continuous(breaks=pretty(dataUZr1m$day, n=25))+ 
+  ggtitle("UZ Rep1 Stages")
+
+
+
+##UZ Rep 1##
+dataUZr1p=subset(dataUZr1s,stage=="L"|stage=="P")
+#dataUZr1p=subset(dataUZr1p, treat=="2")
+dataUZr1p=subset(dataUZr1p, day<=20)
+#Stages: Change Over Time
+
+ggplot(dataUZr1p, aes(x=day, fill=stage))+
+  geom_density(alpha=.3)+
+  facet_grid(treat~start, scales ="free_y")+
+  ggtitle("UZ Rep1 Stages")
+
+ggplot(dataUZr1p, aes(x=day, fill=stage))+
+  theme_classic()+
+  geom_histogram(binwidth=.5, alpha=.5, position="identity")+
+  scale_x_discrete(limits=c(1,2,3,4,5,6,7,8,9,10,11,13,15,17))+
+  ggtitle("UZ Non Diapause Rep1 Stages")+
+  ylab("# of Insects in each stage")+xlab("Day")
+```
+
+
+##CO2 Production Over Time
+````{r}
+##Point Plot: Hourly CO2 production
+dataCO2=data
+dataCO2=subset(dataCO2,treat=="1"|treat=="2")
+dataCO2=subset(dataCO2,day<=12)
+dataCO2=subset(dataCO2,stage=="L")
+dataCO2=subset(dataCO2,Tray!="12,23 1201-02"&Tray!="12,23 1201-01"&Tray!="16,23 1202"&Tray!="16,23 1201")
+ggplot(data=dataCO2,aes(x=day,y=co2_hourly, color=treat))+
+  facet_wrap(~strain)+
+  geom_point()+
+  geom_smooth(method="loess")+
+  theme_classic()+
+  scale_colour_discrete(name="Treatment",breaks=c("1", "2"),labels=c("Diapause", "Non-Diapause"))+
+  ggtitle("Larvae CO2 production")+
+  ylab("CO2 production")
+
+##Point Plot: Hourly CO2 production
+dataCO2=data
+dataCO2=subset(dataCO2,treat=="3"|treat=="4")
+dataCO2=subset(dataCO2,stage=="L")
+ggplot(data=dataCO2,aes(x=day,y=co2_hourly, color=treat))+facet_wrap(~strain)+
+  geom_point()+
+  geom_smooth(method="loess")+
+  theme_classic()+
+  scale_colour_discrete(name="Treatment",breaks=c("3", "4"),labels=c("Diapause", "post45:Non-Diapause"))+
+  ggtitle("Larvae CO2 production")+
+  ylab("CO2 production")
+
+##Point Plot: Hourly CO2 production by mass
+dataCO2m=data
+dataCO2m=subset(dataCO2m,treat=="1"|treat=="2")
+dataCO2m=subset(dataCO2m,day<=12)
+dataCO2m=subset(dataCO2m,stage=="L")
+dataCO2m=subset(dataCO2m,Tray!="12,23 1201-02"&Tray!="12,23 1201-01"&Tray!="16,23 1202"&Tray!="16,23 1201")
+ggplot(data=dataCO2m,aes(x=day,y=co2_hourly_mass, color=treat))+
+  facet_wrap(~strain)+
+  geom_point()+
+  geom_smooth(method="loess")+
+  scale_colour_discrete(name="Treatment",breaks=c("1", "2"),labels=c("Diapause", "Non-Diapause"))+
+  theme_classic()+
+  ggtitle("Larvae CO2 production")+
+  ylab("CO2 production by Mass")
+
+##Point Plot: Hourly CO2 production by mass
+dataCO2m=data
+dataCO2m=subset(dataCO2m,treat=="3"|treat=="4")
+ggplot(data=dataCO2m,aes(x=day,y=co2_hourly_mass, color=treat))+facet_wrap(~strain)+
+  geom_point()+
+  geom_smooth(method="loess")+
+  scale_colour_discrete(name="Treatment",breaks=c("3", "4"),labels=c("Diapause", "post 45:Non-Diapause"))+
+  theme_classic()+
+  ggtitle("Larvae CO2 production")+
+  ylab("CO2 production by Mass")
+````

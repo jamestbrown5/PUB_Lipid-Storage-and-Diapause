@@ -1,0 +1,1028 @@
+
+1. RecName: Full=Sex-specific storage protein 1; Short=SP-1
+56 aa protein
+P84632.1 GI:76363432
+
+2. PREDICTED: FIT family protein CG10671 [Amyelois transitella]
+360 aa protein
+XP_013190796.1 GI:913319449
+
+3. PREDICTED: ecdysteroid-regulated 16 kDa protein-like [Amyelois transitella]
+146 aa protein
+XP_013192310.1 GI:913322217
+
+4. PREDICTED: lipid storage droplets surface-binding protein 2 [Amyelois transitella]
+306 aa protein
+XP_013192910.1 GI:913323293
+
+5. PREDICTED: lipid storage droplets surface-binding protein 1 isoform X1 [Amyelois transitella]
+431 aa protein
+XP_013192920.1 GI:913323311
+
+6. PREDICTED: lipid storage droplets surface-binding protein 1 isoform X2 [Amyelois transitella]
+424 aa protein
+XP_013192921.1 GI:913323313
+
+7. PREDICTED: lipid storage droplets surface-binding protein 1 isoform X3 [Amyelois transitella]
+369 aa protein
+XP_013192922.1 GI:913323315
+
+8. storage protein, partial [Ostrinia furnacalis]
+297 aa protein
+ADA84071.1 GI:282721697
+
+9. storage protein [Ostrinia furnacalis]
+755 aa protein
+AEG19552.1 GI:333827700
+
+10. niemann-pick type C-2a [Papilio xuthus]
+145 aa protein
+BAM18090.1 GI:389608957
+
+11. similar to CG10671, partial [Papilio xuthus]
+151 aa protein
+BAM19648.1 GI:389612279
+
+12. PREDICTED: lipid storage droplets surface-binding protein 1 isoform X1 [Papilio xuthus]
+445 aa protein
+XP_013167384.1 GI:910312044
+
+13. PREDICTED: lipid storage droplets surface-binding protein 1 isoform X2 [Papilio xuthus]
+444 aa protein
+XP_013167392.1 GI:910312046
+
+14. PREDICTED: lipid storage droplets surface-binding protein 1 isoform X3 [Papilio xuthus]
+441 aa protein
+XP_013167400.1 GI:910312048
+
+15. PREDICTED: lipid storage droplets surface-binding protein 1 isoform X4 [Papilio xuthus]
+384 aa protein
+XP_013167408.1 GI:910312050
+
+16. PREDICTED: lipid storage droplets surface-binding protein 2 isoform X1 [Papilio xuthus]
+322 aa protein
+XP_013167534.1 GI:910312068
+
+17. PREDICTED: lipid storage droplets surface-binding protein 2 isoform X2 [Papilio xuthus]
+314 aa protein
+XP_013167542.1 GI:910312070
+
+18. PREDICTED: FIT family protein CG10671 [Papilio xuthus]
+364 aa protein
+XP_013172194.1 GI:910337259
+
+19. ecdysteroid-regulated 16 kDa protein-like precursor [Papilio xuthus]
+145 aa protein
+NP_001299692.1 GI:917955210
+
+20. Ecdysteroid-regulated 16 kDa protein [Papilio xuthus]
+145 aa protein
+KPI90959.1 GI:930648611
+
+21. FIT family protein CG10671 [Papilio xuthus]
+364 aa protein
+KPI97360.1 GI:930655028
+
+22. Lipid storage droplets surface-binding protein 2 [Papilio xuthus]
+333 aa protein
+KPI99468.1 GI:930657147
+
+23. Lipid storage droplets surface-binding protein 1 [Papilio xuthus]
+432 aa protein
+KPI99470.1 GI:930657149
+
+24. storage protein 1 [Omphisa fuscidentalis]
+700 aa protein
+ABO27097.1 GI:126742098
+
+25. storage protein 2 [Omphisa fuscidentalis]
+671 aa protein
+ABO27098.2 GI:138369030
+
+26. hexamerine [Spodoptera exigua]
+707 aa protein
+ABR67195.1 GI:150035403
+
+27. methionine-rich storage protein [Spodoptera exigua]
+751 aa protein
+ABX55887.1 GI:161015759
+
+28. secreted ferritin S subunit precursor [Calpodes ethlius]
+216 aa protein
+AAD50238.1 GI:5738076
+
+29. secreted ferritin S subunit precursor [Calpodes ethlius]
+216 aa protein
+AAD50239.1 GI:5738078
+
+30. secreted ferritin G subunit precursor [Calpodes ethlius]
+230 aa protein
+AAD50240.1 GI:5738080
+
+31. secreted ferritin G subunit precursor [Calpodes ethlius]
+230 aa protein
+AAD50241.1 GI:5738082
+
+32. Chain A, Crystal Structure Of Trichoplusia Ni Secreted Ferritin
+212 aa protein
+1Z6O_A GI:67463949
+
+33. Chain B, Crystal Structure Of Trichoplusia Ni Secreted Ferritin
+212 aa protein
+1Z6O_B GI:67463950
+
+34. Chain C, Crystal Structure Of Trichoplusia Ni Secreted Ferritin
+212 aa protein
+1Z6O_C GI:67463951
+
+35. Chain D, Crystal Structure Of Trichoplusia Ni Secreted Ferritin
+212 aa protein
+1Z6O_D GI:67463952
+
+36. Chain E, Crystal Structure Of Trichoplusia Ni Secreted Ferritin
+212 aa protein
+1Z6O_E GI:67463953
+
+37. Chain F, Crystal Structure Of Trichoplusia Ni Secreted Ferritin
+212 aa protein
+1Z6O_F GI:67463954
+
+38. Chain G, Crystal Structure Of Trichoplusia Ni Secreted Ferritin
+212 aa protein
+1Z6O_G GI:67463955
+
+39. Chain H, Crystal Structure Of Trichoplusia Ni Secreted Ferritin
+212 aa protein
+1Z6O_H GI:67463956
+
+40. Chain I, Crystal Structure Of Trichoplusia Ni Secreted Ferritin
+212 aa protein
+1Z6O_I GI:67463957
+
+41. Chain J, Crystal Structure Of Trichoplusia Ni Secreted Ferritin
+212 aa protein
+1Z6O_J GI:67463958
+
+42. Chain K, Crystal Structure Of Trichoplusia Ni Secreted Ferritin
+212 aa protein
+1Z6O_K GI:67463959
+
+43. Chain L, Crystal Structure Of Trichoplusia Ni Secreted Ferritin
+212 aa protein
+1Z6O_L GI:67463960
+
+44. Chain M, Crystal Structure Of Trichoplusia Ni Secreted Ferritin
+191 aa protein
+1Z6O_M GI:67463961
+
+45. Chain N, Crystal Structure Of Trichoplusia Ni Secreted Ferritin
+191 aa protein
+1Z6O_N GI:67463962
+
+46. Chain O, Crystal Structure Of Trichoplusia Ni Secreted Ferritin
+191 aa protein
+1Z6O_O GI:67463963
+
+47. Chain P, Crystal Structure Of Trichoplusia Ni Secreted Ferritin
+191 aa protein
+1Z6O_P GI:67463964
+
+48. Chain Q, Crystal Structure Of Trichoplusia Ni Secreted Ferritin
+191 aa protein
+1Z6O_Q GI:67463965
+
+49. Chain R, Crystal Structure Of Trichoplusia Ni Secreted Ferritin
+191 aa protein
+1Z6O_R GI:67463966
+
+50. Chain S, Crystal Structure Of Trichoplusia Ni Secreted Ferritin
+191 aa protein
+1Z6O_S GI:67463967
+
+51. Chain T, Crystal Structure Of Trichoplusia Ni Secreted Ferritin
+191 aa protein
+1Z6O_T GI:67463968
+
+52. Chain U, Crystal Structure Of Trichoplusia Ni Secreted Ferritin
+191 aa protein
+1Z6O_U GI:67463969
+
+53. Chain V, Crystal Structure Of Trichoplusia Ni Secreted Ferritin
+191 aa protein
+1Z6O_V GI:67463970
+
+54. Chain W, Crystal Structure Of Trichoplusia Ni Secreted Ferritin
+191 aa protein
+1Z6O_W GI:67463971
+
+55. Chain X, Crystal Structure Of Trichoplusia Ni Secreted Ferritin
+191 aa protein
+1Z6O_X GI:67463972
+
+56. arylphorin-type storage protein [Pieris rapae]
+706 aa protein
+ACF70482.1 GI:194400543
+
+57. arylphorin precursor [Hyalophora cecropia]
+704 aa protein
+AAB86644.1 GI:2625146
+
+58. riboflavin binding hexamerin precursor [Hyalophora cecropia]
+696 aa protein
+AAB86645.1 GI:2625148
+
+59. moderately methionine rich hexamerin precursor [Hyalophora cecropia]
+752 aa protein
+AAB86646.1 GI:2625150
+
+60. very methionine rich hexamerin precursor [Hyalophora cecropia]
+753 aa protein
+AAB86647.1 GI:2625152
+
+61. arylphorin precursor [Antheraea pernyi]
+704 aa protein
+AAP34685.1 GI:30841715
+
+62. RecName: Full=Arylphorin; Flags: Precursor
+704 aa protein
+Q7Z1F8.1 GI:51315785
+
+63. arylphorin precursor [Antheraea pernyi]
+704 aa protein
+ABQ96634.1 GI:148615593
+
+64. Chain A, Crystal Structure Of Antheraea Pernyi Arylphorin
+674 aa protein
+3GWJ_A GI:229597913
+
+65. Chain B, Crystal Structure Of Antheraea Pernyi Arylphorin
+674 aa protein
+3GWJ_B GI:229597914
+
+66. Chain C, Crystal Structure Of Antheraea Pernyi Arylphorin
+674 aa protein
+3GWJ_C GI:229597915
+
+67. Chain D, Crystal Structure Of Antheraea Pernyi Arylphorin
+674 aa protein
+3GWJ_D GI:229597916
+
+68. Chain E, Crystal Structure Of Antheraea Pernyi Arylphorin
+674 aa protein
+3GWJ_E GI:229597917
+
+69. Chain F, Crystal Structure Of Antheraea Pernyi Arylphorin
+674 aa protein
+3GWJ_F GI:229597918
+
+70. PREDICTED: ecdysteroid-regulated 16 kDa protein [Papilio polytes]
+145 aa protein
+XP_013136334.1 GI:909562332
+
+71. PREDICTED: lipid storage droplets surface-binding protein 2 isoform X1 [Papilio polytes]
+314 aa protein
+XP_013137733.1 GI:909564901
+
+72. PREDICTED: lipid storage droplets surface-binding protein 2 isoform X2 [Papilio polytes]
+307 aa protein
+XP_013137734.1 GI:909564903
+
+73. PREDICTED: lipid storage droplets surface-binding protein 1 isoform X1 [Papilio polytes]
+320 aa protein
+XP_013137805.1 GI:909565034
+
+74. PREDICTED: lipid storage droplets surface-binding protein 1 isoform X2 [Papilio polytes]
+319 aa protein
+XP_013137806.1 GI:909565036
+
+75. PREDICTED: lipid storage droplets surface-binding protein 1 isoform X3 [Papilio polytes]
+316 aa protein
+XP_013137808.1 GI:909565038
+
+76. PREDICTED: FIT family protein CG10671 [Papilio polytes]
+364 aa protein
+XP_013146864.1 GI:909581727
+
+77. FIT family protein CG10671 [Papilio machaon]
+169 aa protein
+KPJ07184.1 GI:930666061
+
+78. Ecdysteroid-regulated 16 kDa protein [Papilio machaon]
+145 aa protein
+KPJ10655.1 GI:930669782
+
+79. Lipid storage droplets surface-binding protein 2 [Papilio machaon]
+317 aa protein
+KPJ13132.1 GI:930672549
+
+80. Lipid storage droplets surface-binding protein 1 [Papilio machaon]
+432 aa protein
+KPJ13136.1 GI:930672553
+
+81. PREDICTED: lipid storage droplets surface-binding protein 2 isoform X1 [Papilio machaon]
+319 aa protein
+XP_014361106.1 GI:943956505
+
+82. PREDICTED: lipid storage droplets surface-binding protein 2 isoform X2 [Papilio machaon]
+311 aa protein
+XP_014361107.1 GI:943956508
+
+83. PREDICTED: lipid storage droplets surface-binding protein 1 isoform X1 [Papilio machaon]
+445 aa protein
+XP_014361117.1 GI:943956530
+
+84. PREDICTED: lipid storage droplets surface-binding protein 1 isoform X2 [Papilio machaon]
+441 aa protein
+XP_014361118.1 GI:943956532
+
+85. PREDICTED: lipid storage droplets surface-binding protein 1 isoform X3 [Papilio machaon]
+417 aa protein
+XP_014361119.1 GI:943956535
+
+86. PREDICTED: lipid storage droplets surface-binding protein 1 isoform X4 [Papilio machaon]
+384 aa protein
+XP_014361120.1 GI:943956537
+
+87. PREDICTED: ecdysteroid-regulated 16 kDa protein-like [Papilio machaon]
+145 aa protein
+XP_014364392.1 GI:943964297
+
+88. PREDICTED: FIT family protein CG10671 [Papilio machaon]
+364 aa protein
+XP_014368877.1 GI:943975331
+
+89. VHDL receptor [Helicoverpa zea]
+751 aa protein
+AAR32136.1 GI:39843367
+
+90. basic hexamerin, partial [Helicoverpa zea]
+333 aa protein
+AAR32137.1 GI:39843369
+
+91. very high density lipoprotein [Helicoverpa zea]
+1539 aa protein
+ABQ23674.1 GI:146345325
+
+92. pheromone biosynthesis-activating neuropeptide receptor [Helicoverpa armigera]
+346 aa protein
+AAW47417.1 GI:57231401
+
+93. arylphorin [Helicoverpa armigera]
+690 aa protein
+AEO51737.1 GI:346987767
+
+94. methionine-rich storage protein [Heliconius erato]
+749 aa protein
+ACH89347.1 GI:199581291
+
+95. Arylphorin-like hexamerin-1 [Plutella xylostella]
+699 aa protein
+BAF32561.1 GI:114842151
+
+96. Arylphorin-like hexamerin-2 [Plutella xylostella]
+698 aa protein
+BAF32562.1 GI:114842153
+
+97. methionine-rich storage protien 1 [Plutella xylostella]
+763 aa protein
+BAF45385.1 GI:124039568
+
+98. methionine-rich storage protien 2 [Plutella xylostella]
+763 aa protein
+BAF45386.1 GI:124039570
+
+99. storage protein 1, partial [Plutella xylostella]
+698 aa protein
+ABY66382.1 GI:164683436
+
+100. eukaryotic initiation factor 4A [Plutella xylostella]
+422 aa protein
+ABY66383.1 GI:164683438
+
+101. PREDICTED: lipid storage droplets surface-binding protein 1 isoform X1 [Plutella xylostella]
+436 aa protein
+XP_011552472.1 GI:768409376
+
+102. PREDICTED: lipid storage droplets surface-binding protein 1 isoform X2 [Plutella xylostella]
+434 aa protein
+XP_011552482.1 GI:768409378
+
+103. PREDICTED: lipid storage droplets surface-binding protein 1 isoform X3 [Plutella xylostella]
+432 aa protein
+XP_011552490.1 GI:768409380
+
+104. PREDICTED: lipid storage droplets surface-binding protein 1 isoform X4 [Plutella xylostella]
+430 aa protein
+XP_011552499.1 GI:768409382
+
+105. PREDICTED: lipid storage droplets surface-binding protein 1 isoform X5 [Plutella xylostella]
+424 aa protein
+XP_011552507.1 GI:768409384
+
+106. PREDICTED: lipid storage droplets surface-binding protein 1 isoform X6 [Plutella xylostella]
+377 aa protein
+XP_011552513.1 GI:768409386
+
+107. PREDICTED: lipid storage droplets surface-binding protein 2, partial [Plutella xylostella]
+292 aa protein
+XP_011552573.1 GI:768409398
+
+108. PREDICTED: ecdysteroid-regulated 16 kDa protein-like [Plutella xylostella]
+146 aa protein
+XP_011568846.1 GI:768413451
+
+109. PREDICTED: ecdysteroid-regulated 16 kDa protein-like [Plutella xylostella]
+147 aa protein
+XP_011557209.1 GI:768431822
+
+110. PREDICTED: arylphorin subunit beta-like [Plutella xylostella]
+699 aa protein
+XP_011557265.1 GI:768431924
+
+111. arylphorin subunit beta-like precursor [Plutella xylostella]
+698 aa protein
+NP_001292426.1 GI:770075490
+
+112. arylphorin subunit beta-like precursor [Plutella xylostella]
+699 aa protein
+NP_001292425.1 GI:770075598
+
+113. basic juvenile hormone-suppressible protein 2-like precursor [Plutella xylostella]
+763 aa protein
+NP_001296026.1 GI:822092434
+
+114. basic juvenile hormone-suppressible protein 2-like precursor [Plutella xylostella]
+763 aa protein
+NP_001296025.1 GI:822092446
+
+115. RecName: Full=Sex-specific storage-protein 1; Short=SP 1; AltName: Full=Methionine-rich storage protein; Flags: Precursor
+747 aa protein
+P09179.1 GI:134925
+
+116. storage protein SP2 [Bombyx mori]
+704 aa protein
+AAA27848.1 GI:156047
+
+117. RecName: Full=Sex-specific storage-protein 2; Short=SP 2; AltName: Full=Arylphorin; Flags: Precursor
+704 aa protein
+P20613.2 GI:1174445
+
+118. SP1 [Bombyx mori]
+732 aa protein
+CAA31417.1 GI:1335609
+
+119. Promoting Protein [Bombyx mori]
+154 aa protein
+BAA89306.1 GI:6691465
+
+120. promoting protein [Bombyx mori]
+154 aa protein
+AAQ01563.1 GI:33285891
+
+121. ecdysteroid-regulated 16 kDa protein precursor [Bombyx mori]
+145 aa protein
+ABD36212.1 GI:87248319
+
+122. iron storage protein [Bombyx mori]
+229 aa protein
+ABG76018.1 GI:110559584
+
+123. ferritin precursor [Bombyx mori]
+229 aa protein
+NP_001037584.1 GI:112982960
+
+124. promoting protein precursor [Bombyx mori]
+154 aa protein
+NP_001036842.1 GI:112983946
+
+125. promoting protein precursor [Bombyx mori]
+154 aa protein
+NP_001037199.1 GI:112984526
+
+126. sex-specific storage-protein 2 precursor [Bombyx mori]
+703 aa protein
+NP_001037590.1 GI:124430725
+
+127. ecdysteroid-regulated 16 kDa protein precursor [Bombyx mori]
+145 aa protein
+NP_001093080.1 GI:151301100
+
+128. sex-specific storage-protein 1 precursor [Bombyx mori]
+747 aa protein
+NP_001106747.2 GI:169234936
+
+129. lipid storage droplet 2-like [Bombyx mori]
+305 aa protein
+NP_001138804.1 GI:223890178
+
+130. Ca2+/calmodulin-dependent protein kinase II [Bombyx mori]
+510 aa protein
+BAJ08364.1 GI:297306700
+
+131. silkworm storage protein [Bombyx mori]
+696 aa protein
+AFD02109.1 GI:379327811
+
+132. transcription factor Sp3 precursor [Bombyx mori]
+696 aa protein
+NP_001243953.1 GI:379698962
+
+133. Chain A, Sp2-sp3 - A Complex Of Two Storage Proteins From Bombyx Mori Hemolymph
+680 aa protein
+4L37_A GI:563320778
+
+134. Chain B, Sp2-sp3 - A Complex Of Two Storage Proteins From Bombyx Mori Hemolymph
+687 aa protein
+4L37_B GI:563320779
+
+135. Chain B, Crystal Structure Of Bombyx Mori Sp2/sp3 Heterohexamer
+696 aa protein
+3WJM_B GI:694269380
+
+136. Chain C, Crystal Structure Of Bombyx Mori Sp2/sp3 Heterohexamer
+696 aa protein
+3WJM_C GI:694269381
+
+137. Chain D, Crystal Structure Of Bombyx Mori Sp2/sp3 Heterohexamer
+696 aa protein
+3WJM_D GI:694269382
+
+138. PREDICTED: lipid storage droplet 2-like isoform X1 [Bombyx mori]
+306 aa protein
+XP_012545064.1 GI:827544946
+
+139. PREDICTED: lipid storage droplet 2-like isoform X2 [Bombyx mori]
+276 aa protein
+XP_012545065.1 GI:827544948
+
+140. PREDICTED: FIT family protein CG10671 [Bombyx mori]
+350 aa protein
+XP_012550506.1 GI:827558832
+
+141. diapause associated protein 1 [Choristoneura fumiferana]
+753 aa protein
+AAC35428.1 GI:3599936
+
+142. diapause associated protein 2 [Choristoneura fumiferana]
+748 aa protein
+AAC35429.1 GI:3599938
+
+143. storage protein-1 [Hyphantria cunea]
+753 aa protein
+AAB38773.1 GI:1732507
+
+144. storage protein-2 [Hyphantria cunea]
+747 aa protein
+AAD39550.1 GI:5081821
+
+145. flavin-binding storage protein, HFP {N-terminal} [Galleria mellonella, pupal hemolymph, Peptide Partial, 43 aa]
+43 aa protein
+AAB29774.1 GI:545076
+
+146. larval hemolymph protein, partial [Galleria mellonella]
+119 aa protein
+ABG91580.1 GI:110812735
+
+147. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02075.1 GI:261870420
+
+148. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02076.1 GI:261870422
+
+149. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02077.1 GI:261870424
+
+150. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02078.1 GI:261870426
+
+151. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02079.1 GI:261870428
+
+152. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02080.1 GI:261870430
+
+153. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02081.1 GI:261870432
+
+154. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02082.1 GI:261870434
+
+155. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02083.1 GI:261870436
+
+156. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02084.1 GI:261870438
+
+157. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02085.1 GI:261870440
+
+158. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02086.1 GI:261870442
+
+159. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02087.1 GI:261870444
+
+160. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02088.1 GI:261870446
+
+161. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02089.1 GI:261870448
+
+162. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02090.1 GI:261870450
+
+163. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02091.1 GI:261870452
+
+164. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02092.1 GI:261870454
+
+165. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02093.1 GI:261870456
+
+166. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02094.1 GI:261870458
+
+167. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02095.1 GI:261870460
+
+168. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02096.1 GI:261870462
+
+169. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02097.1 GI:261870464
+
+170. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02098.1 GI:261870466
+
+171. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02099.1 GI:261870468
+
+172. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02100.1 GI:261870470
+
+173. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02101.1 GI:261870472
+
+174. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02102.1 GI:261870474
+
+175. methionine-rich storage protein, partial [Heliconius melpomene aglaope]
+159 aa protein
+ACY02103.1 GI:261870476
+
+176. methionine-rich storage protein, partial [Heliconius melpomene aglaope x Heliconius melpomene amaryllis]
+159 aa protein
+ACY02113.1 GI:261870496
+
+177. methionine-rich storage protein, partial [Heliconius melpomene aglaope x Heliconius melpomene amaryllis]
+159 aa protein
+ACY02125.1 GI:261870520
+
+178. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02104.1 GI:261870478
+
+179. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02105.1 GI:261870480
+
+180. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02106.1 GI:261870482
+
+181. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02107.1 GI:261870484
+
+182. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02108.1 GI:261870486
+
+183. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02109.1 GI:261870488
+
+184. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02110.1 GI:261870490
+
+185. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02111.1 GI:261870492
+
+186. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02112.1 GI:261870494
+
+187. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02114.1 GI:261870498
+
+188. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02115.1 GI:261870500
+
+189. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02116.1 GI:261870502
+
+190. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02117.1 GI:261870504
+
+191. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02118.1 GI:261870506
+
+192. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02119.1 GI:261870508
+
+193. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02120.1 GI:261870510
+
+194. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02121.1 GI:261870512
+
+195. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02122.1 GI:261870514
+
+196. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02123.1 GI:261870516
+
+197. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02124.1 GI:261870518
+
+198. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02126.1 GI:261870522
+
+199. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02127.1 GI:261870524
+
+200. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02128.1 GI:261870526
+
+201. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02129.1 GI:261870528
+
+202. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02130.1 GI:261870530
+
+203. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02131.1 GI:261870532
+
+204. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02132.1 GI:261870534
+
+205. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02133.1 GI:261870536
+
+206. methionine-rich storage protein, partial [Heliconius melpomene amaryllis]
+159 aa protein
+ACY02134.1 GI:261870538
+
+207. hemolymph storage protein 1 [Samia ricini]
+753 aa protein
+BAF42698.1 GI:119709603
+
+208. hemolymph storage protein 2 [Samia ricini]
+704 aa protein
+BAF42699.1 GI:119709605
+
+209. hexamerin storage srotein PinSP1 [Plodia interpunctella]
+765 aa protein
+AAK71136.1 GI:14599862
+
+210. hexamerin storage protein PinSP2 [Plodia interpunctella]
+750 aa protein
+AAK71137.1 GI:14599864
+
+211. hexamerin [Leguminivora glycinivorella]
+702 aa protein
+AIM56832.1 GI:681869951
+
+212. beta-tubulin, partial [Sesamia nonagrioides]
+296 aa protein
+ABA02189.1 GI:74275413
+
+213. moderately methionine rich storage protein [Sesamia nonagrioides]
+751 aa protein
+AAY26453.2 GI:119692145
+
+214. methionine-rich storage protein [Sesamia nonagrioides]
+748 aa protein
+ABA02188.2 GI:198404578
+
+215. lipid storage droplet 2-like protein [Danaus plexippus]
+153 aa protein
+EHJ65250.1 GI:357606855
+
+216. moderately methionine rich storage protein [Danaus plexippus]
+746 aa protein
+EHJ65451.1 GI:357607327
+
+217. arylphorin-type storage protein [Danaus plexippus]
+1407 aa protein
+EHJ65895.1 GI:357608261
+
+218. moderately methionine rich storage protein [Danaus plexippus]
+747 aa protein
+EHJ65899.1 GI:357608265
+
+219. Ecdysteroid-regulated 16 kDa protein [Danaus plexippus]
+145 aa protein
+EHJ65928.1 GI:357608316
+
+220. methionine-rich storage protein [Danaus plexippus]
+748 aa protein
+EHJ77141.1 GI:357627461
+
+221. lipid storage droplet 2-like protein [Danaus plexippus]
+170 aa protein
+EHJ77521.1 GI:357628060
+
+222. hypothetical protein KGM_02741 [Danaus plexippus]
+362 aa protein
+EHJ77847.1 GI:357628552
+
+223. methionine-rich storage protein, partial [Heliconius melpomene]
+213 aa protein
+ACH89348.1 GI:199581293
+
+224. hexamerin 2 [Corcyra cephalonica]
+703 aa protein
+AAG44959.1 GI:12006901
+
+225. hexamerin 2 [Corcyra cephalonica]
+703 aa protein
+AAG44960.1 GI:12006903
+
+226. Lipid storage droplet-2 [Pararge aegeria]
+313 aa protein
+JAA80220.1 GI:509164199
+
+227. Lipid storage droplet-1, partial [Pararge aegeria]
+165 aa protein
+JAA85027.1 GI:509173813
+
+228. Lipid storage droplet-1, partial [Pararge aegeria]
+206 aa protein
+JAA87196.1 GI:509178151
+
+229. moderately methionine rich storage protein [Spodoptera litura]
+750 aa protein
+CAB55602.1 GI:5869983
+
+230. moderately methionine rich storage protein [Spodoptera litura]
+752 aa protein
+CAB55603.1 GI:5869985
+
+231. methionine-rich storage protein [Spodoptera litura]
+751 aa protein
+CAB55604.1 GI:5869987
+
+232. arylphorin subunit [Spodoptera litura]
+698 aa protein
+CAB55605.1 GI:5869989
+
+233. methionine-rich storage protein [Chilo suppressalis]
+758 aa protein
+BAE98324.1 GI:110743533
+
+234. cytochrome oxidase subunit 1, partial (mitochondrion) [Tineola bisselliella]
+202 aa protein
+ADW51257.1 GI:320553464
+
+235. methionine-rich storage protein, partial [Heliothis virescens]
+190 aa protein
+AAB14955.1 GI:1230610
+
+236. p82 riboflavin-binding hexamer monomer, partial [Heliothis virescens]
+353 aa protein
+AAO20843.1 GI:27802135
+
+237. large subunit arylphorin p76, partial [Heliothis virescens]
+256 aa protein
+AAO20844.1 GI:27802137
+
+238. RecName: Full=Arylphorin subunit alpha; Flags: Precursor
+702 aa protein
+P14296.1 GI:114240
+
+239. methionine-rich storage protein 1 [Manduca sexta]
+752 aa protein
+AAA29320.1 GI:159526
+
+240. methionine-rich storage protein 2 [Manduca sexta]
+752 aa protein
+AAA29321.1 GI:159528
+
+241. methionine-rich storage protein 3 [Manduca sexta]
+752 aa protein
+AAA29322.1 GI:159530
+
+242. Met-rich storage protein SP1A
+250 aa protein
+1803340A GI:228382
+
+243. Met-rich storage protein SP1B
+181 aa protein
+1803340B GI:228383
+
+244. ecdysteroid regulated 16 kDa [Manduca sexta]
+145 aa protein
+AAB08704.1 GI:1117824
+
+245. RecName: Full=Arylphorin subunit beta; Flags: Precursor
+703 aa protein
+P14297.2 GI:1168527
+
+246. RecName: Full=Ecdysteroid-regulated 16 kDa protein; Flags: Precursor
+145 aa protein
+Q25481.1 GI:3182995
+
+247. lipid storage droplet protein 1 [Manduca sexta]
+365 aa protein
+ACF24761.1 GI:193876254
+
+248. lipid storage droplet protein 2 [Manduca sexta]
+304 aa protein
+AEJ33049.1 GI:338858970
+
+249. lipid storage droplet protein 1 isoform A [Manduca sexta]
+377 aa protein
+AIE17453.1 GI:661903215
+
+250. lipid storage droplet protein 1 isoform B [Manduca sexta]
+432 aa protein
+AIE17454.1 GI:661903217
+
+251. iron storage protein [Bombyx mandarina]
+229 aa protein
+ABG76019.1 GI:110559586
+
+252. Lipid storage droplet-1, partial [Operophtera brumata]
+126 aa protein
+KOB64889.1 GI:914554336
+
+253. Storage protein 1, partial [Operophtera brumata]
+644 aa protein
+KOB65585.1 GI:914556167
+
+254. FIT family protein [Operophtera brumata]
+363 aa protein
+KOB68774.1 GI:914562565
+
+255. Storage protein 1, partial [Operophtera brumata]
+626 aa protein
+KOB74357.1 GI:914571176
+
+256. Arylphorin-type storage protein [Operophtera brumata]
+2431 aa protein
+KOB76643.1 GI:914574306
+
+257. Methionine-rich storage protein 2 [Operophtera brumata]
+755 aa protein
+KOB77045.1 GI:914574811

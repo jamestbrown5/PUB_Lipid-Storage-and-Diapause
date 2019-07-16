@@ -1,0 +1,166 @@
+Blast4-request ::= {
+  body queue-search {
+    program "blastn",
+    service "wgs",
+    queries bioseq-set {
+      seq-set {
+        seq {
+          id {
+            local str "Query_60797"
+          },
+          descr {
+            user {
+              type str "CFastaReader",
+              data {
+                {
+                  label str "DefLine",
+                  data str ">"
+                }
+              }
+            }
+          },
+          inst {
+            repr raw,
+            mol na,
+            length 2700,
+            seq-data ncbi2na '11D896E93469F821D7033C310FFC3FAF3FC3F6EBAE94A0FC
+2500E1A194064379E6BDF416D71A257BF4E042A62841965F62717853CF1523031005B49D267A50
+5BFE91619B5B45355B4A04D99E541761795392795C41892F7477DBA50912823A4A8074F86FFCE2
+CE661BA185E7B5779DB1E527993415B13BD071E5DD6D94C7912948470AB350B9556EBA21BD5A10
+BFBA1542BBD21998882D175BAF5E6A6528E50C10D5040F11A49A1DA25A2499BA6C7D22084DA4D0
+5D4D1E91E9376DC55F609E263536D9428CA2288BEFF1C4E4D248D36523106E8993B904176B66E1
+59F4187D29254C962AB1F5409E8764AD949237E96548F670451DD623FA16D4BA148F28D86EDA27
+A117A2A22BD35294D801A7D3EC7960E92123557A18811A936189EA4178E8B6DAE309641665C71A
+6379104EA51B7D375C654615E14D94FE810C68B8EA23D261A6388856B3DCD9E919B13E184DFEC7
+110A10BE497CD2843BDE8FD569359BB5D4D26E8A9A66A65046769D91E924897A589ED99A9D87D1
+9522926E7A767D1937534E187D071B4D8AE041109A529593A91FD64DF5E9951528626E9DD6769F
+4185228A74E3607A10BDDE0A3E6D6A4104635A619246876D6E18D5BD8991BD6664B6999569856A
+759619A58BD87DE69E69E9645139E3150A91D242AC56B6EFB3B8EBB507A8A38CA36242172EAB5E
+C1864976C79ADF661642C558596653A9F55F6128A9759C105E261F5D65504E9AE622E4A34AF458
+E7B92492412C87AC87A8E821D0BC23B4114182B231448742A0FBCB214E0E5E0836258BC0803A37
+48D29C0F348072CB30280E033FD83369F901E05FFCBF3FCCF32C3F74C09C4071E13F681851E788
+20396020F384C2AFCF3CFB0C007FFC7E3FCB73033E2C103EC3A678CCE87D8FF0CC3F1303C63C23
+CF0C203AB4F2FC2C9ECC5DCC0C3EC3CFCBEC31EFD3087830C25FD1'H
+          }
+        }
+      }
+    },
+    subject database "WGS_VDB://GAHP01 WGS_VDB://GAVD01 tsa_nt",
+    algorithm-options {
+      {
+        name "EvalueThreshold",
+        value cutoff e-value { 1, 10, 1 }
+      },
+      {
+        name "UngappedMode",
+        value boolean FALSE
+      },
+      {
+        name "PercentIdentity",
+        value real { 0, 10, 0 }
+      },
+      {
+        name "HitlistSize",
+        value integer 100
+      },
+      {
+        name "EffectiveSearchSpace",
+        value big-integer 0
+      },
+      {
+        name "DbLength",
+        value big-integer 0
+      },
+      {
+        name "WindowSize",
+        value integer 0
+      },
+      {
+        name "DustFiltering",
+        value boolean TRUE
+      },
+      {
+        name "RepeatFiltering",
+        value boolean FALSE
+      },
+      {
+        name "MaskAtHash",
+        value boolean TRUE
+      },
+      {
+        name "DustFilteringLevel",
+        value integer 20
+      },
+      {
+        name "DustFilteringWindow",
+        value integer 64
+      },
+      {
+        name "DustFilteringLinker",
+        value integer 1
+      },
+      {
+        name "GapXDropoff",
+        value real { 6, 10, 1 }
+      },
+      {
+        name "GapXDropoffFinal",
+        value real { 1, 10, 2 }
+      },
+      {
+        name "GapExtnAlgorithm",
+        value integer 1
+      },
+      {
+        name "MismatchPenalty",
+        value integer -2
+      },
+      {
+        name "MatchReward",
+        value integer 1
+      },
+      {
+        name "GapOpeningCost",
+        value integer 0
+      },
+      {
+        name "StrandOption",
+        value strand-type both-strands
+      },
+      {
+        name "WordSize",
+        value integer 28
+      }
+    },
+    program-options {
+      {
+        name "EntrezQuery",
+        value string "txid29057 [ORGN]"
+      }
+    },
+    format-options {
+      {
+        name "Web_JobTitle",
+        value string "P. interpunctella PPO nt vs. O. nubilalis TSA"
+      },
+      {
+        name "Web_OrganismName",
+        value string "Ostrinia nubilalis (taxid:29057)"
+      },
+      {
+        name "Web_NewWindow",
+        value boolean TRUE
+      },
+      {
+        name "Web_ShortQueryAdjust",
+        value boolean TRUE
+      },
+      {
+        name "Web_DBGroup",
+        value string "wgsOrg"
+      }
+    }
+  }
+}
+
+

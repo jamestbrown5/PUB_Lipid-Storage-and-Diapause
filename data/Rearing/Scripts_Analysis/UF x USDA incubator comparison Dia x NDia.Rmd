@@ -1,0 +1,65 @@
+---
+title: "2018_USDA Abiotic Rearing Conditions"
+author: "JT Brown"
+date: "June 13, 2018"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+##Call Data
+library(readxl)
+library(ggplot2)
+library(nlme)
+library(lme4)
+library(lmerTest)
+library(ez)
+library(lsr)
+library(dplyr)
+library(tidyr)
+library(MASS)
+library(doBy)
+library(plyr)
+
+
+##PC
+  data=read_excel("/Users/jbrown/Documents/GitHub/Rearing/Data/20180613_Larval LH Incubator Temp Comparison.xlsx",sheet = "Sheet1")
+
+##MAC
+## reading in the data and looking at its structure
+#setwd("/Users/jbrown/Documents/GitHub/Respirometry/Data")
+#data=read_excel("/Users/jbrown/Documents/GitHub/Respirometry/Data/20180613_Larval LH Incubator Temp Comparison.xlsx",sheet = "Sheet1")
+
+#to remove the columns with rh data
+data$"usdahobo_uf12rh"=NULL
+data$"usdahobo_uf16rh"=NULL
+data$"usdahobo_usda12rh"=NULL
+data$"usdahobo_usda16rh"=NULL
+data$"ufhobo_uf12rh"=NULL
+data$"ufhobo_uf16rh"=NULL
+data$"ufhobo_usda12rh"=NULL
+data$"ufhobo_usda16rh"=NULL 
+
+#convert from wide to long data
+data=gather(data,hobo_incubator,temperature, usdahobo_uf12temp:ufhobo_usda16temp)
+
+#remove NAs
+data=subset(data,hour!="NA")
+data=subset(data,temperature!="NA")
+
+str(data)
+```
+
+
+```{r}
+data$hobo_incubator<-as.factor(as.character(data$hobo_incubator))
+ggplot(data=data,aes(x=hour,y=temperature,group=hobo_incubator,color=hobo_incubator))+
+  geom_point()+
+  geom_smooth(method="loess")+
+  theme_classic()+
+  facet_wrap(~place)+
+  ggtitle("Incubator Temperatures")+
+  ylab("Temperature")+xlab("Hour")
+```
+

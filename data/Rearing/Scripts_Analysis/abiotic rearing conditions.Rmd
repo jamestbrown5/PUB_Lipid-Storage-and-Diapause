@@ -1,0 +1,73 @@
+---
+title: "Abiotic Conditions"
+author: "Brown, J.T."
+date: "September 20, 2018"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(readxl)
+library(ggplot2)
+library(nlme)
+library(lme4)
+library(lmerTest)
+library(ez)
+library(lsr)
+library(dplyr)
+library(tidyr)
+library(MASS)
+library(doBy)
+library(plyr)
+library(stringr)
+```
+
+
+```{r}
+##PC
+data=read_excel("/Users/jbrown/Documents/GitHub/Rearing/Data/hobo temps_full.xlsx",sheet = "Sheet1")
+str(data)
+
+##MAC
+## reading in the data and looking at its structure
+#setwd("/Users/JamesB/Google Drive/Graduate School/Self_JamesTBrown/GitHub/Nutrition and Diapause/FreezeDry/Data")
+#data=read_excel("/Users/JamesB/Google Drive/Graduate School/Self_JamesTBrown/GitHub/FreezeDry/Data/2017_Lyophollization Validation.xlsx", sheet = "Sheet1")
+
+
+
+data$treat=as.factor(data$treat)
+data$time=substr(data$date,12,19)
+data$date=as.Date(data$date)
+str(data)
+```
+
+```{r}
+data=data[grep(":00:00", data$time), ]
+head(data)
+data=subset(data,temp<=26)
+data=subset(data,temp>=20)
+#data=subset(data,treat=="ND")
+data=subset(data,date>="2018-01-01 00:00:00")
+ggplot(data,aes(x=date,y=temp))+
+  geom_point(aes(color=treat))+
+  ggtitle("Hobo Abiotic Conditions")
+
+ggplot(data=data,aes(x=date,y=temp,group=treat,color=treat))+
+  stat_summary(aes(y = temp), fun.y=mean, geom="line")+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=2) +
+  theme_classic()+
+  ggtitle("Abiotic hobo conditions")+
+  ylab("Date")+xlab("Temperature")
+
+
+##Are the conditions in long day and short day significantly different?
+mod=aov(temp~date,data=data)
+plot(mod)
+summary(mod)
+```

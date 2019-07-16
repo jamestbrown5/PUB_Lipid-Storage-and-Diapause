@@ -1,0 +1,164 @@
+  Blast4-request ::= {
+  body queue-search {
+    program "blastn",
+    service "wgs",
+    queries bioseq-set {
+      seq-set {
+        seq {
+          id {
+            local str "Query_182331"
+          },
+          descr {
+            user {
+              type str "CFastaReader",
+              data {
+                {
+                  label str "DefLine",
+                  data str ">"
+                }
+              }
+            }
+          },
+          inst {
+            repr raw,
+            mol na,
+            length 2357,
+            seq-data ncbi2na '80244B627B8D0469F9C107D402FF2FF3FBC5A6087FADB403
+A486482500205E7BEF7D85A546895E7D3920A9861084B7D49E5624F1C56840C4A9BE24619EDE36
+7DA858E19C8BAE5AE98136A79485E26E54E49E5F10624BDD9DF4D48244A88E9E905D36317DBEB3
+990ED8A3786D1EE44C7949D64D055C4E741C79FB7B647DE4488E1142A7D06D547FAD405F54842F
+4E8550AEF590272A2B7506DB8512924A394BA23D61837049F489E89589266E9B1F598A1369B417
+9147A47A4DEBB157D88587D94DB410A1299AA075EC7139149234F948C44DA26FDEC1ADEA59BAE6
+B1141F4A9553608A7C7D5407A1D50B652599FA5D42BD92BDAF75985E85A56E85934A362BB689E8
+88E8A859B9D4A536288396D36DDE905902E5DD122885ACD86E7A905D3A2DF535D255059A71CEA8
+5E4413A946D379DB19D1855853691FA2431A6E3AB87514594E6215BDF7167A464F6D863B7D85E4
+C21427150B1A8384A7A1F55A0D66CDF534BBA2A5796B24117DA4743A89224EB21FA52A8761F455
+88A0BB9E9C2F474DF491862F47CED362B810C52E99E794EA4EF5937D7A45AD061889A125DD67D8
+2249A21DD4D89D842F7649678196904114D659049BE1D75B45354C62685F4E8521A5657A235A9D
+659E7962F61F7BA3BABA59147E78D542A04590A7D58EB9DF6E3AEDC1E838E166F890844BA91790
+61925DB1E6A3598580B35A109994EA7D5BD85A5D5420D4578B87DF195413B534A4B91ED0BD1A19
+C528D2924996B2B40FAABA87A438288FA0BFE04EA733B863DE3FB1A38491370BD17FBA4DF3B13C
+3CEB2C3E57002EE1F5EC3CE34BDCFF93F0E00000'H
+          }
+        }
+      }
+    },
+    subject database "WGS_VDB://GAHP01 WGS_VDB://GAVD01 tsa_nt",
+    algorithm-options {
+      {
+        name "EvalueThreshold",
+        value cutoff e-value { 1, 10, 1 }
+      },
+      {
+        name "UngappedMode",
+        value boolean FALSE
+      },
+      {
+        name "PercentIdentity",
+        value real { 0, 10, 0 }
+      },
+      {
+        name "HitlistSize",
+        value integer 100
+      },
+      {
+        name "EffectiveSearchSpace",
+        value big-integer 0
+      },
+      {
+        name "DbLength",
+        value big-integer 0
+      },
+      {
+        name "WindowSize",
+        value integer 0
+      },
+      {
+        name "DustFiltering",
+        value boolean TRUE
+      },
+      {
+        name "RepeatFiltering",
+        value boolean FALSE
+      },
+      {
+        name "MaskAtHash",
+        value boolean TRUE
+      },
+      {
+        name "DustFilteringLevel",
+        value integer 20
+      },
+      {
+        name "DustFilteringWindow",
+        value integer 64
+      },
+      {
+        name "DustFilteringLinker",
+        value integer 1
+      },
+      {
+        name "GapXDropoff",
+        value real { 6, 10, 1 }
+      },
+      {
+        name "GapXDropoffFinal",
+        value real { 1, 10, 2 }
+      },
+      {
+        name "GapExtnAlgorithm",
+        value integer 1
+      },
+      {
+        name "MismatchPenalty",
+        value integer -2
+      },
+      {
+        name "MatchReward",
+        value integer 1
+      },
+      {
+        name "GapOpeningCost",
+        value integer 0
+      },
+      {
+        name "StrandOption",
+        value strand-type both-strands
+      },
+      {
+        name "WordSize",
+        value integer 28
+      }
+    },
+    program-options {
+      {
+        name "EntrezQuery",
+        value string "txid29057 [ORGN]"
+      }
+    },
+    format-options {
+      {
+        name "Web_JobTitle",
+        value string "O. furnacalis sequence vs. O. nubilalis TSA"
+      },
+      {
+        name "Web_OrganismName",
+        value string "Ostrinia nubilalis (taxid:29057)"
+      },
+      {
+        name "Web_NewWindow",
+        value boolean TRUE
+      },
+      {
+        name "Web_ShortQueryAdjust",
+        value boolean TRUE
+      },
+      {
+        name "Web_DBGroup",
+        value string "wgsOrg"
+      }
+    }
+  }
+}
+
+
