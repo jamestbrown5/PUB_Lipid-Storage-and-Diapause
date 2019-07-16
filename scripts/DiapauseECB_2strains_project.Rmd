@@ -22,12 +22,14 @@ library(tidyr)
 library(MASS)
 library(doBy)
 library(plyr)
+library(devtools)
 ```
 
 ## Plots and data analysis of CO2 production
 ```{r}
+data <- read_excel("~/GitHub/Respirometry/Data/Respir.xlsx")
 
-data=Respir
+
 ############## Data Prep ###################
 data=subset(data, VCO2!="NA") # Remove NAs from df
 data=subset(data, syringe!="Blank Control") #Removing "Blank Control" syringes
@@ -466,13 +468,13 @@ summary(lm(y~x+I(x^2),test))
 ```{r} 
 #################### Data Prep ######################
 ##PC
-data=read_excel("/Users/jbrown/Documents/GitHub/Lipid_Quantification/Data/Extraction Samples JLM.xlsx",sheet = "CONTSAMPdf")
-
+data1=read_excel("/Users/jbrown/Documents/GitHub/Lipid_Quantification/Data/Extraction Samples JLM.xlsx",sheet = "CONTSAMPdf")
+data1=
 #file: energy
 #sheet: energy
 
 dataWeDl=data1
-dataWeDl=subset(dataWeDl,photoperiod==12)
+dataWeDl=subset(dataWeDl,treat==12)
 dataWeDl=subset(dataWeDl,lipid_mass>=0)
 dataWeDl=subset(dataWeDl,lipid_mass<=0.1000)
 count(dataWeDl$treat)
