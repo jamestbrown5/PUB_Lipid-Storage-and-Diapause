@@ -1,0 +1,47 @@
+---
+title: "Freeze Drying Validation"
+author: "Brown, J.T."
+date: "September 18, 2018"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(readxl)
+library(ggplot2)
+library(nlme)
+library(lme4)
+library(lmerTest)
+library(ez)
+library(lsr)
+library(dplyr)
+library(tidyr)
+library(MASS)
+library(doBy)
+library(plyr)
+```
+
+
+```{r}
+##PC
+data=read_excel("/Users/jbrown/Documents/GitHub/Nutrition and Diapause/FreezeDry/Data/2017_Lyophollization Validation.xlsx",sheet = "Sheet1")
+str(data)
+
+##MAC
+## reading in the data and looking at its structure
+#setwd("/Users/JamesB/Google Drive/Graduate School/Self_JamesTBrown/GitHub/Nutrition and Diapause/FreezeDry/Data")
+#data=read_excel("/Users/JamesB/Google Drive/Graduate School/Self_JamesTBrown/GitHub/FreezeDry/Data/2017_Lyophollization Validation.xlsx", sheet = "Sheet1")
+```
+
+```{r}
+#data$hour=as.factor(data$hour)
+data$strain<-as.factor(as.character(data$strain))
+data$sample<-as.factor(as.character(data$sample))
+
+ggplot(data = data, aes(x=hour,y=mloss))+
+  geom_point()+
+  geom_line(aes(color=sample))+
+  theme_classic()+
+  scale_x_continuous(breaks=c(0,24,48),labels = c("0","24","48"))
+```

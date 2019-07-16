@@ -1,0 +1,657 @@
+---
+title: "ECB Dry Pass Phenotype"
+editor_options: null
+  chunk_output_type: inline
+chunk_output_type: inline
+output: html_document
+---
+### Goal: Rear UZ and BE at 23C at 16:8 and 12:12 L:D regimens (UZ12, UZ16, BE12, BE16). Track dry mass changes during the 5th instar, the wandering stage, and during diapause. 
+
+##Call Data
+````{r}
+library(readxl)
+library(ggplot2)
+library(nlme)
+library(lme4)
+library(lmerTest)
+library(ez)
+library(lsr)
+library(dplyr)
+library(tidyr)
+library(MASS)
+library(doBy)
+library(plyr)
+
+
+##PC
+#data=read_excel("/Users/jbrown/Documents/GitHub/Lipid_Quantification/Data/Extraction Samples JLM.xlsx",sheet = "CONTSAMPdf")
+
+
+##MAC
+## reading in the data and looking at its structure
+setwd("/Users/JamesB/Google Drive/Graduate School/Self_JamesTBrown/GitHub/Lipid_Quantification/Scripts_Analysis")
+data=read_excel("/Users/JamesB/Google Drive/Graduate School/Self_JamesTBrown/GitHub/Lipid_Quantification/Data/Extraction Samples JLM.xlsx", sheet = "CONTSAMPdf")
+
+data=subset(data,treat!="NA")
+data=subset(data,cohort!="20180131")
+data=subset(data,cohort!="20180206")
+data=subset(data,sample_day!="W14")
+data=subset(data,sample_day!="W19")
+data=subset(data,sample_day!="W29")
+
+
+##This code breaks apart the data in the column "treat" into "strain" and "photoperiod"
+data$sample_id<-as.factor(as.character(data$sample_id))
+data$strain<-substr(data$treat,1,2)
+data$photoperiod<-as.numeric(substr(data$treat,3,4))
+data$strain<-as.factor(as.character(data$strain))
+data$photoperiod<-as.factor(as.character(data$photoperiod))
+data$treat<-as.factor(as.character(data$treat))
+data$sample_day<-factor(data$sample_day, levels=c("1" , "3" , "7" , "W" , "pW1" , "pW5" , "pW10" , "W14" ,"W15" , "pW18" , "W19" , "W20" , "W29" , "W30" , "pW38" , "W45"))
+data$cohort<-as.factor(as.character(data$cohort))
+
+#Reducing df
+data1=data[1:626, c("sample_day","rep", "treat","sample_id","5th_date","cohort", "wet_mass","lean_mass","dry_mass","lipid_mass","strain","photoperiod")]
+
+#converting wide to long. This code puts all the observations into one column with the label of your choice (measurements used below)
+dataT=gather(data,traits,measurement,wet_mass:lipid_mass)
+#str(dataT) #shows the structure of the data
+#str(data)
+````
+
+##Traits Plots
+````{r}
+#Larva Trait Plot
+dataTr=dataT
+dataTr=subset(dataTr,measurement!="NA")
+dataTr=subset(dataTr,photoperiod!="NA")
+count(dataTr$treat)
+dataTr=subset(dataTr,sample_day=="1"| sample_day=="W"| sample_day=="W15"| sample_day=="W20" | sample_day=="W30")
+dataTr=subset(dataTr,measurement>=0)
+dataTr=subset(dataTr,measurement<=0.1000)
+ggplot(data=dataTr,aes(x=sample_day,y=measurement,fill=traits))+
+  geom_boxplot()+
+  facet_wrap(~traits)+
+  theme_classic()+
+  ggtitle("Larvae Traits")+
+  ylab("Traits")+xlab("Sample Day")
+
+#Larva lean Mass Plot
+datal=data1
+datal=subset(datal,lean_mass>=0)
+datal=subset(datal,lean_mass<=0.1000)
+count(datal$treat)
+datal=subset(datal,sample_day=="1"| sample_day=="W"| sample_day=="W15"| sample_day=="W20" | sample_day=="W30")
+```
+##Dry Mass Comparison Between Treatments
+```{r}
+#Larva Dry Dry Plot
+dataDrU=data1
+#dataDrU=subset(dataDrU,treat=="UZ12"|treat=="UZ16")
+dataDrU=subset(dataDrU,dry_mass>=0.0001)
+dataDrU=subset(dataDrU,dry_mass<=0.1000)
+count(dataDrU$treat)
+dataDrU=subset(dataDrU,sample_day=="1" | sample_day=="W")
+ggplot(data=dataDrU,aes(x=sample_day,y=dry_mass,color=treat,group=treat))+
+  stat_summary(fun.y=mean, geom="line")+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  theme_classic()+
+  scale_color_manual(values=c(UZ12="purple",UZ16="purple",BE12="orange",BE16="orange"))+
+  ylab("Dry Mass")+xlab("")
+
+#Larva Dry Mass Comparison Between Treatments
+dataDry=data1
+dataDry=subset(dataDry,dry_mass>=0)
+#dataDry=subset(dataDry,dry_mass<=0.1000)
+count(dataDry$treat)
+dataDry=subset(dataDry,sample_day=="1"| sample_day=="W")
+
+ggplot(data=dataDry,aes(x=sample_day,y=dry_mass,group=photoperiod,color=photoperiod))+
+  stat_summary(aes(y = dry_mass), fun.y=mean, geom="line")+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  theme_classic()+
+  ggtitle("Treatment Comparison of Larvae dry Mass (UZ 178 : BE 164 larvae)")+
+  ylab("dry Mass")+xlab("Sample Day")
+
+
+
+
+### Is there a significant difference in dry mass accumulation between treatments in preparation for diapause?
+#### These Data include Day 1 larvae and Day W larvae from both treatments.
+
+######################
+# Larva Dry Mass    #
+# Between Strains ####
+# Between Treatments #
+###### Day 1 #########
+
+
+dataL1=subset(data,sample_day=="1")
+dataL1=subset(dataL1,dry_mass>="0")
+dataL1=subset(dataL1,dry_mass<="0.07")
+
+#this model attempts to fit the linear mixed effects model with 3 variables; photoperiod, dry mass, and the random effect of rep
+## Photoperiod Does NOT SIGNIFICANTLY effect dry mass accumulation between larvae reared in long day vs short day conditions
+mixedL1=lmer(dry_mass ~ photoperiod + (1|rep) ,data=dataL1, REML = TRUE)
+summary(mixedL1)
+plot(mixedL1)
+##The following model removes photoperiod as factors to determine the effect of dry mass and Rep on dry mass
+submodL1=lmer(dry_mass ~ (1|rep),data=dataL1, REML = TRUE)
+summary(submodL1)
+
+## Standard Residuals -  Adding stdres to df and checking for regularity of distribution within +/-2 standard deviations  
+dataL1$stdresL1<-as.vector(scale(resid(submodL1)))
+
+ggplot(data=dataL1,aes(x=sample_day,y=dry_mass,color=photoperiod))+
+  stat_summary(aes(y = dry_mass), fun.y=mean)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  facet_wrap(~photoperiod)+
+  theme_classic()+
+  ggtitle("Treatment Comparison of Larvae dry Mass")+
+  ylab("dry Mass")+xlab("Sample Day 1")
+
+
+
+######################
+# Larva Dry Mass    #
+# Between Strains ####
+# Between Treatments #
+###### Day W #########
+
+##Mixed model with 'rep' as a random factor
+
+dataLW=subset(data,sample_day=="W")
+dataLW=subset(dataLW,dry_mass>="0")
+dataLW=subset(dataLW,dry_mass<="0.07")
+
+#this model attempts to fit the linear mixed effects model with 3 variables; photoperiod, dry mass, and the random effect of rep
+## Photoperiod does SIGNIFICANTLY effect dry mass accumulation between larvae reared in long day vs short day conditions
+mixedLW=lmer(dry_mass ~ photoperiod + (1|rep) ,data=dataLW, REML = TRUE)
+summary(mixedLW)
+plot(mixedLW)
+##The following model removes photoperiod as factors to determine the effect of dry mass and Rep on dry mass
+submodLW=lmer(dry_mass ~ (1|rep),data=dataLW, REML = TRUE)
+summary(submodLW)
+
+## Standard Residuals -  Adding stdres to df and checking for regularity of distribution within +/-2 standard deviations  
+dataLW$stdresLW<-as.vector(scale(resid(submodLW)))
+
+ggplot(data=dataLW,aes(x=sample_day,y=dry_mass,color=photoperiod))+
+  stat_summary(aes(y = dry_mass), fun.y=mean)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  facet_wrap(~photoperiod)+
+  theme_classic()+
+  ggtitle("Treatment Comparison of Larvae dry Mass")+
+  ylab("dry Mass")+xlab("Sample Day W")
+```
+
+##Dry Mass Comparison Within Diapause Treatment and Between UZ12 and BE12 
+```{r}
+######################
+#Larva dry Mass Plot#
+# Within  Treatments #
+######################
+ 
+### Diapause###
+dataDrD=data1
+dataDrD=subset(dataDrD,photoperiod==12)
+dataDrD=subset(dataDrD,dry_mass>=0)
+#dataDrD=subset(dataDrD,dry_mass<=0.1000)
+count(dataDrD$treat)
+dataDrD=subset(dataDrD,sample_day=="1"| sample_day=="W")
+
+ggplot(data=dataDrD,aes(x=sample_day,y=dry_mass,group=treat,color=treat))+
+  stat_summary(fun.y=mean, geom="line",shape=18)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  scale_color_manual(values=c(UZ12="purple",UZ16="purple",BE12="orange",BE16="orange"))+
+  theme_classic()+
+  ggtitle("Diapause: Between Strain Comparison of Larvae dry Mass (UZ 117 : BE 107 larvae)")+
+  ylab("dry Mass")+xlab("Sample Day")
+
+dataDrDl=data1
+dataDrDl=subset(dataDrDl,photoperiod==12)
+dataDrDl=subset(dataDrDl,dry_mass>=0)
+#dataDrDl=subset(dataDrDl,dry_mass<=0.1000)
+count(dataDrDl$treat)
+dataDrDl=subset(dataDrDl,sample_day=="W"| sample_day=="W15"| sample_day=="W20" | sample_day=="W30")
+
+ggplot(data=dataDrDl,aes(x=sample_day,y=dry_mass,group=treat,color=treat))+
+  stat_summary(fun.y=mean, geom="line",shape=18)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  scale_color_manual(values=c(UZ12="purple",UZ16="purple",BE12="orange",BE16="orange"))+
+  theme_classic()+
+  ggtitle("Diapause: Between Strain Comparison of Larvae dry Mass (UZ 117 : BE 107 larvae)")+
+  ylab("dry Mass")+xlab("Sample Day")
+
+######################
+# Larva Dry Mass    #
+# Within  Treatments #
+###### Day 1 #########
+
+##Mixed model with 'rep' as a random factor
+
+dataDrD1=subset(data1,photoperiod==12)
+dataDrD1=subset(dataDrD1,dry_mass>=0)
+dataDrD1=subset(dataDrD1,sample_day=="1")
+count(dataDrD1$treat)
+
+#this model attempts to fit the linear mixed effects model with 3 variables; photoperiod, dry mass, and the random effect of rep
+## Strain does SIGNIFICANTLY effect dry mass accumulation between larvae reared in long day vs short day conditions
+mixedLeD1=lmer(dry_mass ~  strain + (1|rep),data=dataDrD1, REML = TRUE)
+summary(mixedLeD1)
+plot(mixedLeD1)
+##The following model removes photoperiod as factors to determine the effect of dry mass and Rep on dry mass
+submodLeD1=lmer(dry_mass ~ (1|rep),data=dataDrD1, REML = TRUE)
+summary(submodLeD1)
+
+## Standard Residuals -  Adding stdres to df and checking for regularity of distribution within +/-2 standard deviations  
+dataDrD1$stdresLeD1<-as.vector(scale(resid(submodLeD1)))
+
+ggplot(data=dataDrD1,aes(x=sample_day,y=dry_mass,color=treat))+
+  stat_summary(fun.y=mean, geom="line",shape=18)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  scale_color_manual(values=c(UZ12="purple",UZ16="purple",BE12="orange",BE16="orange"))+
+  theme_classic()+
+  ggtitle("Treatment Comparison of Larvae dry Mass (UZ 25 : BE 17 larvae)")+
+  ylab("dry Mass")+xlab("Sample Day 1")
+
+######################
+# Larva Dry Mass    #
+# Between Strains ####
+# Within  Treatments #
+###### Day W #########
+
+##Mixed model with 'rep' as a random factor
+
+dataDrDW=subset(data1,photoperiod==12)
+dataDrDW=subset(dataDrDW,dry_mass>=0)
+dataDrDW=subset(dataDrDW,sample_day=="W")
+
+
+#this model attempts to fit the linear mixed effects model with 3 variables; photoperiod, dry mass, and the random effect of rep
+## Strain does SIGNIFICANTLY effect dry mass accumulation between larvae reared in long day vs short day conditions
+mixedLeDW=lmer(dry_mass ~  strain + (1|rep),data=dataDrDW, REML = TRUE)
+summary(mixedLeDW)
+plot(mixedLeDW)
+##The following model removes photoperiod as factors to determine the effect of dry mass and Rep on dry mass
+submodLeDW=lmer(dry_mass ~ (1|rep),data=dataDrDW, REML = TRUE)
+summary(submodLeDW)
+
+## Standard Residuals -  Adding stdres to df and checking for regularity of distribution within +/-2 standard deviations  
+dataDrDW$stdresLeDW<-as.vector(scale(resid(submodLeDW)))
+
+ggplot(data=dataDrDW,aes(x=sample_day,y=dry_mass,color=treat))+
+  stat_summary(fun.y=mean, geom="line",shape=18)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  scale_color_manual(values=c(UZ12="purple",UZ16="purple",BE12="orange",BE16="orange"))+
+  theme_classic()+
+  ggtitle("Treatment Comparison of Larvae dry Mass (UZ 34 : BE 43 larvae)")+
+  ylab("dry Mass")+xlab("Sample Day W")
+
+
+######################
+# Larva Dry Mass    #
+# Between Strains ####
+# Within  Treatments #
+###### Day W15 #######
+
+##Mixed model with 'rep' as a random factor
+
+dataDrDW15=subset(data1,sample_day=="W15")
+dataDrDW15=subset(dataDrDW15,dry_mass>="0")
+
+#this model attempts to fit the linear mixed effects model with 3 variables; photoperiod, dry mass, and the random effect of rep
+## Photoperiod does SIGNIFICANTLY effect dry mass accumulation between larvae reared in long day vs short day conditions
+mixedLeDW15=lmer(dry_mass ~ strain + (1|rep) ,data=dataDrDW15, REML = TRUE)
+summary(mixedLeDW15)
+plot(mixedLeDW15)
+##The following model removes photoperiod as factors to determine the effect of dry mass and Rep on dry mass
+submodLeDW15=lmer(dry_mass ~ (1|rep),data=dataDrDW15, REML = TRUE)
+summary(submodLeDW15)
+
+## Standard Residuals -  Adding stdres to df and checking for regularity of distribution within +/-2 standard deviations  
+dataDrDW15$stdresLeDW15<-as.vector(scale(resid(submodLeDW15)))
+
+ggplot(data=dataDrDW15,aes(x=sample_day,y=dry_mass,color=treat))+
+  stat_summary(fun.y=mean, geom="line",shape=18)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  scale_color_manual(values=c(UZ12="purple",UZ16="purple",BE12="orange",BE16="orange"))+
+  theme_classic()+
+  ggtitle("Treatment Comparison of Larvae dry Mass (UZ 19 : BE 37 larvae)")+
+  ylab("dry Mass")+xlab("Sample Day W15")
+
+######################
+# Larva Dry Mass    #
+# Between Strains ####
+# Within  Treatments #
+###### Day w20 #######
+
+##Mixed model with 'rep' as a random factor
+
+dataDrDW20=subset(data1,sample_day=="W20")
+dataDrDW20=subset(dataDrDW20,dry_mass>="0")
+
+#this model attempts to fit the linear mixed effects model with 3 variables; photoperiod, dry mass, and the random effect of rep
+## Photoperiod does SIGNIFICANTLY effect dry mass accumulation between larvae reared in long day vs short day conditions
+mixedLeDW20=lmer(dry_mass ~ strain + (1|rep) ,data=dataDrDW20, REML = TRUE)
+summary(mixedLeDW20)
+plot(mixedLeDW20)
+##The following model removes photoperiod as factors to determine the effect of dry mass and Rep on dry mass
+submodLeDW20=lmer(dry_mass ~ (1|rep),data=dataDrDW20, REML = TRUE)
+summary(submodLeDW20)
+
+## Standard Residuals -  Adding stdres to df and checking for regularity of distribution within +/-2 standard deviations  
+dataDrDW20$stdresLeDW20<-as.vector(scale(resid(submodLeDW20)))
+
+ggplot(data=dataDrDW20,aes(x=sample_day,y=dry_mass,color=treat))+
+  stat_summary(fun.y=mean, geom="line",shape=18)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  scale_color_manual(values=c(UZ12="purple",UZ16="purple",BE12="orange",BE16="orange"))+
+  theme_classic()+
+  ggtitle("Treatment Comparison of Larvae dry Mass (UZ 20 : BE 6 larvae)")+
+  ylab("dry Mass")+xlab("Sample Day W20")
+
+
+######################
+# Larva Dry Mass    #
+# Between Strains ####
+# Within  Treatments #
+###### Day w30 #######
+
+##Mixed model with 'rep' as a random factor
+
+dataDrDW30=subset(data1,sample_day=="W30")
+dataDrDW30=subset(dataDrDW30,dry_mass>="0")
+
+#this model attempts to fit the linear mixed effects model with 3 variables; photoperiod, dry mass, and the random effect of rep
+## Photoperiod does SIGNIFICANTLY effect dry mass accumulation between larvae reared in long day vs short day conditions
+mixedLeDW30=lmer(dry_mass ~ strain + (1|rep) ,data=dataDrDW30, REML = TRUE)
+summary(mixedLeDW30)
+plot(mixedLeDW30)
+##The following model removes photoperiod as factors to determine the effect of dry mass and Rep on dry mass
+submodLeDW30=lmer(dry_mass ~ (1|rep),data=dataDrDW30, REML = TRUE)
+summary(submodLeDW30)
+
+## Standard Residuals -  Adding stdres to df and checking for regularity of distribution within +/-2 standard deviations  
+dataDrDW30$stdresLeDW30<-as.vector(scale(resid(submodLeDW30)))
+
+ggplot(data=dataDrDW30,aes(x=sample_day,y=dry_mass,color=treat))+
+  stat_summary(fun.y=mean, geom="line",shape=18)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  scale_color_manual(values=c(UZ12="purple",UZ16="purple",BE12="orange",BE16="orange"))+
+  theme_classic()+
+  ggtitle("Treatment Comparison of Larvae dry Mass (UZ 19 : BE 4 larvae)")+
+  ylab("dry Mass")+xlab("Sample Day W30")
+```
+
+##Dry Mass Comparison Within Non Diapause Treatment and Between UZ16 and BE16 
+```{r}
+######################
+#Larva dry Mass Plot#
+# Within   Treatment #
+######################
+
+### Non Diapause###
+dataDrND=data1
+dataDrND=subset(dataDrND,photoperiod==16)
+dataDrND=subset(dataDrND,dry_mass>=0)
+#dataDrND=subset(dataDrND,dry_mass<=0.1000)
+count(dataDrND$treat)
+dataDrND=subset(dataDrND,sample_day=="1"| sample_day=="W")
+
+ggplot(data=dataDrND,aes(x=sample_day,y=dry_mass,group=treat,color=treat))+
+  stat_summary(fun.y=mean, geom="line",shape=18)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  scale_color_manual(values=c(UZ12="purple",UZ16="purple",BE12="orange",BE16="orange"))+
+  theme_classic()+
+  ggtitle("Non Diapause: Between Strain Comparison of Larvae dry Mass (UZ 117 : BE 107 larvae)")+
+  ylab("dry Mass")+xlab("Sample Day")
+  
+######################
+# Larva Dry Mass    #
+# Within  Treatments #
+###### Day 1 #########
+
+##Mixed model with 'rep' as a random factor
+
+dataDrND1=subset(data1,photoperiod==16)
+dataDrND1=subset(dataDrND1,dry_mass>=0)
+dataDrND1=subset(dataDrND1,sample_day=="1")
+count(dataDrND1$treat)
+
+#this model attempts to fit the linear mixed effects model with 3 variables; photoperiod, dry mass, and the random effect of rep
+## Strain does SIGNIFICANTLY effect dry mass accumulation between larvae reared in long day vs short day conditions
+mixedLeND1=lmer(dry_mass ~  strain + (1|rep),data=dataDrND1, REML = TRUE)
+summary(mixedLeND1)
+plot(mixedLeND1)
+##The following model removes photoperiod as factors to determine the effect of dry mass and Rep on dry mass
+submodLeND1=lmer(dry_mass ~ (1|rep),data=dataDrND1, REML = TRUE)
+summary(submodLeND1)
+
+## Standard Residuals -  Adding stdres to df and checking for regularity of distribution within +/-2 standard deviations  
+dataDrND1$stdresLeND1<-as.vector(scale(resid(submodLeND1)))
+
+ggplot(data=dataDrND1,aes(x=sample_day,y=dry_mass,color=treat))+
+  stat_summary(fun.y=mean, geom="line",shape=18)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  scale_color_manual(values=c(UZ12="purple",UZ16="purple",BE12="orange",BE16="orange"))+
+  theme_classic()+
+  ggtitle("Treatment Comparison of Larvae dry Mass (UZ 25 : BE 17 larvae)")+
+  ylab("dry Mass")+xlab("Sample Day 1")
+
+######################
+# Larva Dry Mass    #
+# Between Strains ####
+# Within  Treatments #
+###### Day W #########
+
+##Mixed model with 'rep' as a random factor
+
+dataDrNDW=subset(data1,photoperiod==12)
+dataDrNDW=subset(dataDrNDW,dry_mass>=0)
+dataDrNDW=subset(dataDrNDW,sample_day=="W")
+
+
+#this model attempts to fit the linear mixed effects model with 3 variables; photoperiod, dry mass, and the random effect of rep
+## Strain does SIGNIFICANTLY effect dry mass accumulation between larvae reared in long day vs short day conditions
+mixedLeNDW=lmer(dry_mass ~  strain + (1|rep),data=dataDrNDW, REML = TRUE)
+summary(mixedLeNDW)
+plot(mixedLeNDW)
+##The following model removes photoperiod as factors to determine the effect of dry mass and Rep on dry mass
+submodLeNDW=lmer(dry_mass ~ (1|rep),data=dataDrNDW, REML = TRUE)
+summary(submodLeNDW)
+
+## Standard Residuals -  Adding stdres to df and checking for regularity of distribution within +/-2 standard deviations  
+dataDrNDW$stdresLeNDW<-as.vector(scale(resid(submodLeNDW)))
+
+ggplot(data=dataDrNDW,aes(x=sample_day,y=dry_mass,color=treat))+
+  stat_summary(fun.y=mean, geom="line",shape=18)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  scale_color_manual(values=c(UZ12="purple",UZ16="purple",BE12="orange",BE16="orange"))+
+  theme_classic()+
+  ggtitle("Treatment Comparison of Larvae dry Mass (UZ 34 : BE 43 larvae)")+
+  ylab("dry Mass")+xlab("Sample Day W")
+```
+
+##Dry Mass Comparison Between treatments Within BE strain
+```{r}
+######################
+# Larva dry Mass    #
+# Within Strain      #
+# Between Treatments #
+######################
+
+### BE ###
+dataDrBE=data1
+dataDrBE=subset(dataDrBE,strain=="BE")
+dataDrBE=subset(dataDrBE,dry_mass>=0)
+#dataDrBE=subset(dataDrBE,dry_mass<=0.1000)
+count(dataDrBE$treat)
+dataDrBE=subset(dataDrBE,sample_day=="1"| sample_day=="W")
+
+ggplot(data=dataDrBE,aes(x=sample_day,y=dry_mass,group=treat,color=treat))+
+  stat_summary(fun.y=mean, geom="line",shape=18)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  scale_color_manual(values=c(UZ12="purple",UZ16="purple",BE12="orange",BE16="orange"))+
+  theme_classic()+
+  ggtitle("BE: Within Strain Comparison of Larvae dry Mass")+
+  ylab("dry Mass")+xlab("Sample Day")
+  
+
+######################
+# Larva dry Mass    #
+# Within Strain      #
+# Between Treatments #
+###### Day 1 #########
+
+##Mixed model with 'rep' as a random factor
+
+dataDrBED1=data1
+dataDrBED1=subset(dataDrBED1,strain=="BE")
+dataDrBED1=subset(dataDrBED1,dry_mass>=0)
+dataDrBED1=subset(dataDrBED1,sample_day=="1")
+
+#this model attempts to fit the linear mixed effects model with 3 variables; photoperiod, dry mass, and the random effect of rep
+## Strain does SIGNIFICANTLY effect dry mass accumulation between larvae reared in long day vs short day conditions
+mixedLeBED1=lmer(dry_mass ~  treat + (1|rep),data=dataDrBED1, REML = TRUE)
+summary(mixedLeBED1)
+plot(mixedLeBED1)
+##The following model removes photoperiod as factors to determine the effect of dry mass and Rep on dry mass
+submodLeBED1=lmer(dry_mass ~ (1|rep),data=dataDrBED1, REML = TRUE)
+summary(submodLeBED1)
+
+## Standard Residuals -  Adding stdres to df and checking for regularity of distribution within +/-2 standard deviations  
+dataDrBED1$stdresLeBED1<-as.vector(scale(resid(submodLeBED1)))
+
+ggplot(data=dataDrBED1,aes(x=sample_day,y=dry_mass,color=treat))+
+  stat_summary(fun.y=mean, geom="line",shape=18)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  scale_color_manual(values=c(UZ12="purple",UZ16="purple",BE12="orange",BE16="orange"))+
+  theme_classic()+
+  ggtitle("BE: Within Strain Comparison of Larvae dry Mass")+
+  ylab("dry Mass")+xlab("Sample Day 1")
+
+######################
+# Larva dry Mass    #
+# Within Strain      #
+# Between Treatments #
+###### Day W #########
+
+##Mixed model with 'rep' as a random factor
+
+dataDrBEDW=data1
+dataDrBEDW=subset(dataDrBEDW,strain=="BE")
+dataDrBEDW=subset(dataDrBEDW,dry_mass>=0)
+dataDrBEDW=subset(dataDrBEDW,sample_day=="W")
+
+#this model attempts to fit the linear mixed effects model with 3 variables; photoperiod, dry mass, and the random effect of rep
+## Strain does SIGNIFICANTLY effect dry mass accumulation between larvae reared in long day vs short day conditions
+mixedLeBEDW=lmer(dry_mass ~  treat + (1|rep),data=dataDrBEDW, REML = TRUE)
+summary(mixedLeBEDW)
+plot(mixedLeBEDW)
+##The following model removes photoperiod as factors to determine the effect of dry mass and Rep on dry mass
+submodLeBEDW=lmer(dry_mass ~ (1|rep),data=dataDrBEDW, REML = TRUE)
+summary(submodLeBEDW)
+
+## Standard Residuals -  Adding stdres to df and checking for regularity of distribution within +/-2 standard deviations  
+dataDrBEDW$stdresLeBEDW<-as.vector(scale(resid(submodLeBEDW)))
+
+ggplot(data=dataDrBEDW,aes(x=sample_day,y=dry_mass,color=treat))+
+  stat_summary(fun.y=mean, geom="line",shape=18)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  scale_color_manual(values=c(UZ12="purple",UZ16="purple",BE12="orange",BE16="orange"))+
+  theme_classic()+
+  ggtitle("BE: Within Strain Comparison of Larvae dry Mass")+
+  ylab("dry Mass")+xlab("Sample Day W")
+```
+##Dry Mass Comparison Between treatments Within UZ strain
+```{r}
+######################
+# Larva dry Mass    #
+# Within Strain      #
+# Between Treatments #
+######################
+
+### UZ ###
+dataDrUZ=data1
+dataDrUZ=subset(dataDrUZ,strain=="UZ")
+dataDrUZ=subset(dataDrUZ,dry_mass>=0)
+#dataDrUZ=subset(dataDrUZ,dry_mass<=0.1000)
+count(dataDrUZ$treat)
+dataDrUZ=subset(dataDrUZ,sample_day=="1"| sample_day=="W")
+
+ggplot(data=dataDrUZ,aes(x=sample_day,y=dry_mass,group=treat,color=treat))+
+  stat_summary(fun.y=mean, geom="line",shape=18)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  scale_color_manual(values=c(UZ12="purple",UZ16="purple",UZ12="orange",UZ16="orange"))+
+  theme_classic()+
+  ggtitle("UZ: Within Strain Comparison of Larvae dry Mass")+
+  ylab("dry Mass")+xlab("Sample Day")
+  
+
+######################
+# Larva dry Mass    #
+# Within Strain      #
+# Between Treatments #
+###### Day 1 #########
+
+##Mixed model with 'rep' as a random factor
+
+dataDrUZD1=data1
+dataDrUZD1=subset(dataDrUZD1,strain=="UZ")
+dataDrUZD1=subset(dataDrUZD1,dry_mass>=0)
+dataDrUZD1=subset(dataDrUZD1,sample_day=="1")
+
+#this model attempts to fit the linear mixed effects model with 3 variables; photoperiod, dry mass, and the random effect of rep
+## Strain does SIGNIFICANTLY effect dry mass accumulation between larvae reared in long day vs short day conditions
+mixedLeUZD1=lmer(dry_mass ~  treat + (1|rep),data=dataDrUZD1, REML = TRUE)
+summary(mixedLeUZD1)
+plot(mixedLeUZD1)
+##The following model removes photoperiod as factors to determine the effect of dry mass and Rep on dry mass
+submodLeUZD1=lmer(dry_mass ~ (1|rep),data=dataDrUZD1, REML = TRUE)
+summary(submodLeUZD1)
+
+## Standard Residuals -  Adding stdres to df and checking for regularity of distribution within +/-2 standard deviations  
+dataDrUZD1$stdresLeUZD1<-as.vector(scale(resid(submodLeUZD1)))
+
+ggplot(data=dataDrUZD1,aes(x=sample_day,y=dry_mass,color=treat))+
+  stat_summary(fun.y=mean, geom="line",shape=18)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  scale_color_manual(values=c(UZ12="purple",UZ16="purple",UZ12="orange",UZ16="orange"))+
+  theme_classic()+
+  ggtitle("UZ: Within Strain Comparison of Larvae dry Mass")+
+  ylab("dry Mass")+xlab("Sample Day 1")
+
+######################
+# Larva dry Mass    #
+# Within Strain      #
+# Between Treatments #
+###### Day W #########
+
+##Mixed model with 'rep' as a random factor
+
+dataDrUZDW=data1
+dataDrUZDW=subset(dataDrUZDW,strain=="UZ")
+dataDrUZDW=subset(dataDrUZDW,dry_mass>=0)
+dataDrUZDW=subset(dataDrUZDW,sample_day=="W")
+
+#this model attempts to fit the linear mixed effects model with 3 variables; photoperiod, dry mass, and the random effect of rep
+## Strain does SIGNIFICANTLY effect dry mass accumulation between larvae reared in long day vs short day conditions
+mixedLeUZDW=lmer(dry_mass ~  treat + (1|rep),data=dataDrUZDW, REML = TRUE)
+summary(mixedLeUZDW)
+plot(mixedLeUZDW)
+##The following model removes photoperiod as factors to determine the effect of dry mass and Rep on dry mass
+submodLeUZDW=lmer(dry_mass ~ (1|rep),data=dataDrUZDW, REML = TRUE)
+summary(submodLeUZDW)
+
+## Standard Residuals -  Adding stdres to df and checking for regularity of distribution within +/-2 standard deviations  
+dataDrUZDW$stdresLeUZDW<-as.vector(scale(resid(submodLeUZDW)))
+
+ggplot(data=dataDrUZDW,aes(x=sample_day,y=dry_mass,color=treat))+
+  stat_summary(fun.y=mean, geom="line",shape=18)+
+  stat_summary(fun.data=mean_se, geom="errorbar", width=0.05) +
+  scale_color_manual(values=c(UZ12="purple",UZ16="purple",UZ12="orange",UZ16="orange"))+
+  theme_classic()+
+  ggtitle("UZ: Within Strain Comparison of Larvae dry Mass")+
+  ylab("dry Mass")+xlab("Sample Day W")
+```

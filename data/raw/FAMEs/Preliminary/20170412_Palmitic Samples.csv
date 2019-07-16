@@ -1,0 +1,21 @@
+MW of Tripalmitin Acid (ug/mol),807339000,,,,,,,
+MW Palmitin Methyl (ug/mol),270457000,,,,,,,
+Tripalmatic Acid Conc ug/ml,1200,,,,,,,
+Theoretical yield,8.91819E-07,,,,,,,
+Sample,,12 C16:0 (Palmitic) 6 Results,,,,,,
+Name,Type,RT,Final Conc (ug/ml),,,,,
+"1: Tri Pal, 200ul, 40C",Sample,12.703,2.3186,,,,,
+"1: Tri Pal, 200ul, 40C",Sample,12.743,2.3188,,,,,
+"1: Tri Pal, 200ul, 40C",Sample,12.747,2.3196,,,,,
+,,,,Average,Final Conc @ Final Vol,Moles of derivitized Tri Pal,,Percent Yield
+,,,,2.319,6.957,2.57231E-08,,2.884345048
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+"1: Tri Pal, 200ul, 40C, 15mins",Sample,12.747,2.3202,,,,,
+"1: Tri Pal, 200ul, 40C, 30mins",Sample,12.757,2.3195,,,,,
+"1: Tri Pal, 200ul, 40C, 45mins",Sample,12.757,2.3197,,,,,
+,,,,Average,Final Conc @ Final Vol,Moles of derivitized Tri Pal,,Percent Yield
+,,,,2.3198,6.9594,2.5732E-08,,2.885340079
